@@ -17,6 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('try', function(){
+    phpinfo();
+});
+
 
 Route::post("/login", "AuthController@login");
 Route::post("/signup", "AuthController@signup");
