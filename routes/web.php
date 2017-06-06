@@ -44,6 +44,7 @@ Route::get('/try', function(){
     // $p = $sp->makeQuoteRequest("CUST013643", "Toyota Hilux 4WD DC AC D", "3");
     // $p = $sp->getAppointments();
     // $p = $sp->createCase("CUST013643", "Sample Title", "Sample Description");
+    $p = $sp->showMethods();
 
     return response()->json($p, 200);
 });

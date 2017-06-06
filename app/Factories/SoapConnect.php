@@ -2,7 +2,6 @@
 
 	namespace App\Factories;
 
-    use Artisaninweb\SoapWrapper\SoapWrapper;
     use SoapClient;
 
 	class SoapConnect
@@ -12,10 +11,12 @@
         private $soapClient;
 
         public function __construct(){
-            $soapWrapper = new SoapWrapper();
             $this->serviceUrl = "http://crm.elizade.net:5050/Service1.svc?wsdl";
-            $this->soapWrapper = $soapWrapper;
             $this->soapClient = new SoapClient($this->serviceUrl);
+        }
+
+        public function showMethods(){
+            return $this->soapClient->__getFunctions();
         }
 
         private function makeNewCall($method, $data){
