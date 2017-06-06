@@ -15,7 +15,7 @@
             $soapWrapper = new SoapWrapper();
             $this->serviceUrl = "http://crm.elizade.net:5050/Service1.svc?wsdl";
             $this->soapWrapper = $soapWrapper;
-            $this->soapClient = new SoapClient($this->serviceUrl);
+            $this->soapClient = new \SoapClient($this->serviceUrl);
         }
 
         private function makeNewCall($method, $data){
