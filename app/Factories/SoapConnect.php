@@ -3,7 +3,7 @@
 	namespace App\Factories;
 
     use Artisaninweb\SoapWrapper\SoapWrapper;
-    use SoapClient;
+    // use SoapClient;
 
 	class SoapConnect
 	{
