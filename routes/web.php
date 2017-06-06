@@ -26,6 +26,8 @@ Route::post("/login", "AuthController@login");
 Route::post("/signup", "AuthController@signup");
 
 Route::group(['middleware' => 'auth'], function() {
+    Route::get("/products", "ProductController@getProducts");
+
     Route::get("/appointments", "CaseController@getAppointments");
 
     Route::get("/cases", "CaseController@getCases");
@@ -33,13 +35,15 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post("/cases", "CaseController@createCase");
 });
 
-// Route::get('/try', function(){
-//     $sp = new SoapConnect();
-//     // $p = $sp->customerExist("CUST013643");
-//     // $p = $sp->FindCase("CAS-00037-N0F8S0");
-//     $p = $sp->getCases();
-//     // $p = $sp->getAppointments();
-//     // $p = $sp->createCase("CUST013643", "Sample Title", "Sample Description");
+Route::get('/try', function(){
+    $sp = new SoapConnect();
+    // $p = $sp->customerExist("CUST013643");
+    // $p = $sp->FindCase("CAS-00037-N0F8S0");
+    // $p = $sp->getCases();
+    // $p = $sp->getProducts();
+    // $p = $sp->makeQuoteRequest("CUST013643", "Toyota Hilux 4WD DC AC D", "3");
+    // $p = $sp->getAppointments();
+    // $p = $sp->createCase("CUST013643", "Sample Title", "Sample Description");
 
-//     return response()->json($p, 200);
-// });
+    return response()->json($p, 200);
+});

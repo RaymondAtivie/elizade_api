@@ -29,10 +29,11 @@ class AuthController extends BaseController
         }
 
         $u = $jwt->getUser();
+        $u->token = $jwt->getToken();
         return response()->json([
             "success"=>true, 
             "data"=>[
-                "token" => $jwt->getToken(),
+                // "token" => $jwt->getToken(),
                 "user" => $u
             ]
         ], 200);
@@ -79,6 +80,7 @@ class AuthController extends BaseController
 
             $token = $jwt->getToken();
             $user  = $jwt->getUser();
+            $user->token = $token;
 
             // return a response
             return response()->json([
@@ -86,7 +88,7 @@ class AuthController extends BaseController
                 "message" => "Successfully created user",
                 "data" => [
                     "user" => $user,
-                    "token" => $token
+                    // "token" => $token
                 ]], 201);
         }
 

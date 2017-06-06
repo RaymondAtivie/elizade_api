@@ -3,7 +3,7 @@
 	namespace App\Factories;
 
     use Artisaninweb\SoapWrapper\SoapWrapper;
-    use \SoapClient;
+    use SoapClient;
 
 	class SoapConnect
 	{
@@ -96,6 +96,24 @@
             $method = "GetAppointments";
             
             return $this->makeCall($method, []);
+        }
+
+        public function getProducts(){
+            $method = "GetProducts";
+            
+            return $this->makeCall($method, []);
+        }
+
+        public function makeQuoteRequest($customerNumber, $productName, $quantity){
+            $method = "QuoteRequest";
+
+            $data = [
+                'custo' => $customerNumber,
+                'product'   => $productName,
+                'quantity'   => intval($quantity)
+            ];
+            
+            return $this->makeCall($method, $data);
         }
 
 	}
