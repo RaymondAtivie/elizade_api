@@ -28,6 +28,8 @@ Route::post("/signup", "AuthController@signup");
 Route::group(['middleware' => 'auth'], function() {
     Route::get("/products", "ProductController@getProducts");
 
+    Route::post("/quotes", "OrderController@makeQuoteRequest");
+
     Route::get("/appointments", "CaseController@getAppointments");
 
     Route::get("/cases", "CaseController@getCases");
@@ -41,10 +43,10 @@ Route::get('/try', function(){
     // $p = $sp->FindCase("CAS-00037-N0F8S0");
     // $p = $sp->getCases();
     // $p = $sp->getProducts();
-    // $p = $sp->makeQuoteRequest("CUST013643", "Toyota Hilux 4WD DC AC D", "3");
+    $p = $sp->makeQuoteRequest("CUST013643", "Toyota Hilux 4WD DC AC D", "3");
     // $p = $sp->getAppointments();
     // $p = $sp->createCase("CUST013643", "Sample Title", "Sample Description");
-    $p = $sp->showMethods();
+    // $p = $sp->showMethods();
 
     return response()->json($p, 200);
 });

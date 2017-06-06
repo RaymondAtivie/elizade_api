@@ -15,7 +15,6 @@ class ProductController extends BaseController
         $SC = new SoapConnect();
         $r = $SC->getProducts();
 
-        
         return response()->json($r, 200);
         
     }

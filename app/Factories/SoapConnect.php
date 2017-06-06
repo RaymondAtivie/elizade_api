@@ -12,7 +12,7 @@
 
         public function __construct(){
             $this->serviceUrl = "http://crm.elizade.net:5050/Service1.svc?wsdl";
-            $this->soapClient = new SoapClient($this->serviceUrl);
+            $this->soapClient = new SoapClient($this->serviceUrl, ['cache_wsdl' => WSDL_CACHE_NONE]);
         }
 
         public function showMethods(){
@@ -109,12 +109,18 @@
             $method = "QuoteRequest";
 
             $data = [
-                'custo' => $customerNumber,
+                'custno' => $customerNumber,
                 'product'   => $productName,
                 'quantity'   => intval($quantity)
             ];
-            
-            return $this->makeCall($method, $data);
+
+            $r = $this->makeCall($method, $data);
+
+            if($r){
+                return true;
+            }else{
+                return false;
+            }
         }
 
 	}
