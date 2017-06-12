@@ -7,7 +7,6 @@
 	class SoapConnect
 	{
 		private $serviceUrl;
-        private $soapWrapper;
         private $soapClient;
 
         public function __construct(){
@@ -20,15 +19,15 @@
         }
 
         private function makeNewCall($method, $data){
-            $this->soapWrapper->add('CRW', function ($service) {
-                $service
-                    ->wsdl($this->serviceUrl)
-                    ->trace(true);
-            });
+            // $this->soapWrapper->add('CRW', function ($service) {
+            //     $service
+            //         ->wsdl($this->serviceUrl)
+            //         ->trace(true);
+            // });
 
-            $response = $this->soapWrapper->call('CRW.'.$method, $data);
+            // $response = $this->soapWrapper->call('CRW.'.$method, $data);
 
-            return $response;
+            // return $response;
         }
 
         private function makeCall($method, $data){
@@ -43,6 +42,171 @@
             }
         }
 
+        //GET GENERAL DATA FUNCTIONS
+
+        public function getCountries(){
+            $method = "GetCountries";
+
+            $countries = $this->makeCall($method, []);
+
+            if($countries){
+                $_countries = [];
+                foreach ($countries as $c) {
+                    $_countries[] = $c->Country;
+                }
+                return $_countries;
+            }else{
+                return false;
+            }
+        }
+
+        public function getStates(){
+            $method = "GetStates";
+
+            $states = $this->makeCall($method, []);
+
+            if($states){
+                $_states = [];
+                foreach ($states as $c) {
+                    $_states[] = $c->State;
+                }
+                return $_states;
+            }else{
+                return false;
+            }
+        }
+
+        public function getDepartments(){
+            $method = "GetDepartments";
+
+            $departments = $this->makeCall($method, []);
+
+            if($departments){
+                $_departments = [];
+                foreach ($departments as $c) {
+                    $_departments[] = $c->Department;
+                }
+                return $_departments;
+            }else{
+                return false;
+            }
+        }
+
+        public function getBranches(){
+            $method = "GetBranches";
+
+            $branches = $this->makeCall($method, []);
+
+            if($branches){
+                $_branches = [];
+                foreach ($branches as $c) {
+                    $_branches[] = $c->Branch;
+                }
+                return $_branches;
+            }else{
+                return false;
+            }
+        }
+
+        public function getBusinessSectors(){
+            $method = "GetBusinessSectors";
+
+            $bss = $this->makeCall($method, []);
+
+            if($bss){
+                $_bss = [];
+                foreach ($bss as $c) {
+                    $_bss[] = $c->BusinessSector;
+                }
+                return $_bss;
+            }else{
+                return false;
+            }
+        }
+
+        public function getGenBizPostingGrp(){
+            $method = "GetGenBizPostingGrp";
+
+            $bss = $this->makeCall($method, []);
+
+            if($bss){
+                $_bss = [];
+                foreach ($bss as $c) {
+                    $_bss[] = $c->GenBusPostingGrp;
+                }
+                return $_bss;
+            }else{
+                return false;
+            }
+        }
+
+        public function getCustPostingGr(){
+            $method = "GetCustPostingGrp";
+
+            $bss = $this->makeCall($method, []);
+
+            if($bss){
+                $_bss = [];
+                foreach ($bss as $c) {
+                    $_bss[] = $c->CustomerPostingGrp;
+                }
+                return $_bss;
+            }else{
+                return false;
+            }
+        }
+
+        public function getVatPostingGrp(){
+            $method = "GetVatPostingGrp";
+
+            $bss = $this->makeCall($method, []);
+
+            if($bss){
+                $_bss = [];
+                foreach ($bss as $c) {
+                    $_bss[] = $c->VatPostingGrp;
+                }
+                return $_bss;
+            }else{
+                return false;
+            }
+        }
+
+        public function getPricelists(){
+            $method = "GetPricelists";
+
+            $bss = $this->makeCall($method, []);
+
+            if($bss){
+                $_bss = [];
+                foreach ($bss as $c) {
+                    $_bss[] = $c->Name;
+                }
+                return $_bss;
+            }else{
+                return false;
+            }
+        }
+
+        public function getSalespersons(){
+            $method = "GetSalespersons";
+
+            $salesperson = $this->makeCall($method, []);
+
+            if($salesperson){
+                $_salesperson = [];
+                foreach ($salesperson as $c) {
+                    $_salesperson[] = $c->Salesperson;
+                }
+                return $_salesperson;
+            }else{
+                return false;
+            }
+        }
+
+
+        //CUSTOMERS FUNCTIONS
+
         public function createCase($customerNumber, $title, $description){
             $method = "CreateCase";
 
@@ -52,7 +216,13 @@
                 'title'   => $title
             ];
             
-            return $this->makeCall($method, $data)[0];
+            $case = $this->makeCall($method, $data);
+
+            if($case){
+                return $case[0];
+            }else{
+                return false;
+            }
         }
 
         public function customerExist($customerNumber){
@@ -65,7 +235,7 @@
             $r = $this->makeCall($method, $data);
 
             if($r){
-                return true;
+                return $r;
             }else{
                 return false;
             }
@@ -118,6 +288,58 @@
 
             if($r){
                 return true;
+            }else{
+                return false;
+            }
+        }
+
+
+        ///STAFF FUNCTIONS
+
+        public function staffLogin($username, $password){
+            $method = "Login";
+
+            $data = [
+                'username' => $username,
+                'password'   => $password
+            ];
+
+            $r = $this->makeCall($method, $data);
+
+            if($r){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        public function staffDetails($username){
+            $method = "GetUserDetails";
+
+            $data = [
+                'username' => $username
+            ];
+
+            $r = $this->makeCall($method, $data);
+
+            if($r){
+                return $r[0];
+            }else{
+                return false;
+            }
+        }
+
+        public function getStaffDetails($username, $password){
+            if(!$this->staffLogin($username, $password)){
+                return false;
+            }
+            $name = $this->staffDetails($username);
+
+            if($name){
+                return [
+                    "name"=>$name->StaffName,
+                    "username"=>$username,
+                ];
             }else{
                 return false;
             }

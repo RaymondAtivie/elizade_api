@@ -20,14 +20,6 @@ class AuthController extends BaseController
         // attempt user login
         $jwt = $this->auth->attempt($credentials);
 
-        if(!$jwt->getUser()->activated){
-            return response()->json([
-                "success"=>false, 
-                "type"=>"user_not_allowed",
-                "message"=>"This user has been deactivated",
-            ], 200);
-        }
-
         $u = $jwt->getUser();
         $u->token = $jwt->getToken();
         return response()->json([
@@ -39,7 +31,40 @@ class AuthController extends BaseController
         ], 200);
     }
 
+    public function loginStaff(Request $request)
+    {
+        $credentials = $request->only(["username", "password"]);
 
+        $rules = [
+            "username" => "required",
+            "password" => "required"
+        ];
+        // validation
+        $validation = \Validator::make($credentials, $rules);
+        
+        if($validation->fails()){
+            // validation failed
+            $errorMessage = $validation->errors()->getMessages();
+            // return a response
+            return response()->json([
+                    "success" => false, 
+                    "message" => $errorMessage,
+                    "type" => "validation_error"
+                ], 422);
+        }
+
+        // attempt user login
+        $jwt = $this->auth->attemptStaff($credentials);
+
+        $u = $jwt->getUser();
+        $u['token'] = $jwt->getToken();
+        return response()->json([
+            "success"=>true, 
+            "data"=>[
+                "user" => $u
+            ]
+        ], 200);
+    }
 
     public function signup(Request $request){
         // get request data
@@ -59,7 +84,9 @@ class AuthController extends BaseController
         if($validation->passes()){
             $SC = new SoapConnect();
 
-            if(!$SC->customerExist($data['customer_number'])){
+            $uo = $SC->customerExist($data['customer_number']);
+
+            if(!$uo){
                 return response()->json([
                     "success" => false,
                     "message" => "This customer number doesn't exist on the system",
@@ -70,6 +97,7 @@ class AuthController extends BaseController
             $user = new User;
             $user->customer_number = $data['customer_number'];
             $user->email = $data['email'];
+            $user->name = $uo[0]->CustomerName;
             $user->password = bcrypt($data['password']);
             $user->activated = 1;
             
@@ -100,5 +128,31 @@ class AuthController extends BaseController
                 "message" => $errorMessage,
                 "type" => "validation_error"
             ], 422);
+    }
+
+    public function staffLogin(Request $request)
+    {
+        // get credentials
+        $credentials = $request->only(["username", "password"]);
+        
+        $SC = new SoapConnect();
+        $uo = $SC->staffLogin($data['username'], $data['password']);
+
+        if(!$SC->staffLogin($data['username'], $data['password'])){
+            return response()->json([
+                "success"=>false, 
+                "type"=>"login_failed",
+                "message"=>"Invalid email or password.",
+            ], 200);
+        }
+
+        $u = $jwt->getUser();
+        $u->token = $jwt->getToken();
+        return response()->json([
+            "success"=>true, 
+            "data"=>[
+                "user" => $u
+            ]
+        ], 200);
     }
 }

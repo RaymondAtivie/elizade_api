@@ -6,6 +6,7 @@
     use App\Exceptions\JWT\InvalidUserException;
     use App\Exceptions\JWT\TokenException;
     use Illuminate\Support\Facades\Hash;
+    use App\Factories\SoapConnect;
 
     use Illuminate\Http\Request;
 
@@ -25,6 +26,25 @@
                 "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*24)) ),
                 "iat"=> time(),
                 "sub"=> $this->user->id,
+            ];
+            
+            // encode and return token
+            $this->token = $this->encode($payload, config('jwt.secret'));
+
+            // return class object to enable method chaining
+            return $this;
+        }
+
+        public function attemptStaff($user){
+
+            // get user
+            $this->user = $this->getUserFomCRM($user);
+            // create payload
+            $payload = [
+                "iss"=> config('jwt.iss'),
+                "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*24)) ),
+                "iat"=> time(),
+                "sub"=> $this->user,
             ];
             
             // encode and return token
@@ -63,14 +83,7 @@
             
             // get payload from token
             $payload = $this->decode($this->token);
-
-            // $payload->exp_date = date('d M Y h:i:sA', $payload->exp);
-            // $payload->current_date = date('d M Y h:i:s');
-
-            // dd($payload);
-
-            // dd(time() - $payload->exp);
-
+            
             if($payload->exp < time())
             {
                 throw new TokenException('token_expired');
@@ -90,6 +103,33 @@
             
         }
 
+        public function authenticateCRM(){
+            // if no token
+            if(!$this->token){
+                // return false
+                throw new TokenException('token_absent');
+            }
+            
+            // get payload from token
+            $payload = $this->decode($this->token);
+            
+            if($payload->exp < time())
+            {
+                throw new TokenException('token_expired');
+            }
+            
+            // get user from payload
+            if(!is_array($payload->sub)){
+                throw new TokenException('invalid_user');
+            }else{
+                $this->user = $payload->sub;
+            }
+
+            // return class object to enable method chaining
+            return $this;
+            
+        }
+
         public function getUser(){
             // return the user
             return $this->user;
@@ -98,6 +138,34 @@
         public function getToken(){
             // return token
             return $this->token;
+        }
+
+        private function getUserFomCRM($user){
+            // instantiate model
+            $model = new \App\User;
+            // if user object is passed
+            if($user instanceof \App\User ){
+                // do nothing
+            }elseif(is_array($user)){ 
+                // else if user is an array
+                if(isset($user['username']) && isset($user['password'])){ // if user email and password were supplied
+                    $SC = new SoapConnect();
+
+                    $CRMUser = $SC->getStaffDetails($user['username'], $user['password']);
+                    
+                    if(!$CRMUser){
+                        throw new InvalidUserException('Invalid username or password.');
+                    }
+                    // return user
+                    return $CRMUser;
+                }else{
+                    // throw new invalid user data supplied
+                    throw new InvalidUserException;
+                }
+            }else{
+                // throw new attempt param exception
+                throw new AttemptParamException;
+            }
         }
 
         private function getUserFomObject($user){
