@@ -11,7 +11,12 @@
 
         public function __construct(){
             $this->serviceUrl = "http://crm.elizade.net:5050/Service1.svc?wsdl";
-            $this->soapClient = new SoapClient($this->serviceUrl, ['cache_wsdl' => WSDL_CACHE_NONE]);
+            $this->soapClient = new SoapClient($this->serviceUrl, [
+                    'trace' =>true,
+                    'connection_timeout' => 500000,
+                    'cache_wsdl' => WSDL_CACHE_NONE,
+                    'keep_alive' => false
+                ]);
         }
 
         public function showMethods(){
@@ -343,6 +348,53 @@
             }else{
                 return false;
             }
+        }
+
+        //NOTE: not confirmed // Too Long to retrieve
+        public function getAccounts(){
+            // ini_set('default_socket_timeout', 600);
+            $method = "GetAccounts";
+            
+            return $this->makeCall($method, []);
+        }
+
+        //NOTE: Too long to retrieve
+        public function getLeads(){
+            $method = "GetLeads";
+            
+            return $this->makeCall($method, []);
+        }
+
+        //NOTE: Method does not exist
+        public function getOpportunities(){
+            $method = "GetOpportunities";
+            
+            return $this->makeCall($method, []);
+        }
+
+        public function getContacts(){
+            $method = "GetContacts";
+            
+            return $this->makeCall($method, []);
+        }
+
+        //NOTE: Quotes don't return usefull info
+        public function getQuotes(){
+            $method = "GetQuotes";
+            
+            return $this->makeCall($method, []);
+        }
+
+        public function getOrders(){
+            $method = "GetOrders";
+            
+            return $this->makeCall($method, []);
+        }
+
+        public function getProduct(){
+            $method = "GetProduct";
+            
+            return $this->makeCall($method, []);
         }
 
 	}

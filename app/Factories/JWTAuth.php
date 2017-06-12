@@ -119,7 +119,7 @@
             }
             
             // get user from payload
-            if(!is_array($payload->sub)){
+            if(!is_object($payload->sub)){
                 throw new TokenException('invalid_user');
             }else{
                 $this->user = $payload->sub;

@@ -52,8 +52,14 @@ Route::group(['middleware' => 'auth'], function() {
 });
 
 
-Route::group(['middleware' => 'auth.CRM'], function() {
-    
+Route::group(['middleware' => 'auth.staff', "prefix"=>"staff"], function() {
+    Route::get("/cases", "StaffController@getCases");    
+    Route::get("/appointments", "StaffController@getAppointments");    
+    // Route::get("/opportunities", "StaffController@getOpportunities");    
+    Route::get("/contacts", "StaffController@getOpportunities");    
+    Route::get("/quotes", "StaffController@getQuotes");    
+    Route::get("/orders", "StaffController@getOrders");    
+    Route::get("/products", "ProductController@getProducts");    
 });
 
 Route::get('/try', function(){
@@ -68,7 +74,7 @@ Route::get('/try', function(){
     // $p = $sp->getAppointments();
     // $p = $sp->createCase("CUST013643", "Sample Title", "Sample Description");
     // $p = $sp->showMethods();
-    $p = $sp->getSalespersons();
+    $p = $sp->getProduct();
 
     return response()->json($p, 200);
 });
