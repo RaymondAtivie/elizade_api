@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('try', function(){
+Route::get('/phpinfo', function(){
     phpinfo();
 });
 
@@ -53,28 +53,46 @@ Route::group(['middleware' => 'auth'], function() {
 
 
 Route::group(['middleware' => 'auth.staff', "prefix"=>"staff"], function() {
+
+    Route::post("/leads", "StaffController@createLead");    
+    Route::get("/leads", "StaffController@getLeads");    
+    Route::get("/leads/{account_number}", "StaffController@findLead");   
+
+    Route::post("/accounts", "StaffController@createAccount");    
+    Route::get("/accounts", "StaffController@getAccounts");    
+    Route::get("/accounts/{lead_fullname}", "StaffController@findAccount");   
+
+    Route::post("/cases", "StaffController@createCase");    
     Route::get("/cases", "StaffController@getCases");    
+    Route::get("/cases/{ticket_id}", "CaseController@getCase");
+
+    Route::post("/appointments", "StaffController@createAppointment");    
     Route::get("/appointments", "StaffController@getAppointments");    
+
+    // Route::post("/opportunities", "StaffController@createOpportunity");    
     // Route::get("/opportunities", "StaffController@getOpportunities");    
-    Route::get("/contacts", "StaffController@getOpportunities");    
+    // Route::get("/opportunities/{topic}", "StaffController@findOpportunity");    
+
+    Route::post("/contacts", "StaffController@createContact");    
+    Route::get("/contacts", "StaffController@getContacts");    
+    Route::get("/contacts/{contact_name}", "StaffController@findContact");    
+
+    Route::post("/quotes", "StaffController@createQuote");    
     Route::get("/quotes", "StaffController@getQuotes");    
+    Route::get("/quotes/{quote_number}", "StaffController@findQuote");    
+
+    Route::post("/orders", "StaffController@createOrder");    
     Route::get("/orders", "StaffController@getOrders");    
+    Route::get("/orders/{order_number}", "StaffController@findOrder");    
+
     Route::get("/products", "ProductController@getProducts");    
+    // TODO: Product names can have slash, think of fix
+    Route::get("/products/{product_name}", "ProductController@findProduct");    
 });
 
 Route::get('/try', function(){
     $sp = new SoapConnect();
-    // $p = $sp->customerExist("CUST013643");
-    // $p = $sp->getStaffDetails("Nav", "elizade");
-    // $p = $sp->staffDetails("Nav");
-    // $p = $sp->FindCase("CAS-00037-N0F8S0");
-    // $p = $sp->getCases();
-    // $p = $sp->getProducts();
-    // $p = $sp->makeQuoteRequest("CUST013643", "Toyota Hilux 4WD DC AC D", "3");
-    // $p = $sp->getAppointments();
-    // $p = $sp->createCase("CUST013643", "Sample Title", "Sample Description");
-    // $p = $sp->showMethods();
-    $p = $sp->getProduct();
+    $p = $sp->customerExist("CUST013643");
 
     return response()->json($p, 200);
 });

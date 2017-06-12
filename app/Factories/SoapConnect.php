@@ -299,7 +299,7 @@
         }
 
 
-        ///STAFF FUNCTIONS
+        ////////////////////STAFF FUNCTIONS
 
         public function staffLogin($username, $password){
             $method = "Login";
@@ -350,6 +350,19 @@
             }
         }
 
+        public function staffCreateCase($customerNumber, $description, $title, $staffUsername){
+            $method = "StaffCreateCase";
+
+            $data = [
+                "accountnumber" => $customerNumber,
+                "description" => $description,
+                "title" => $title,
+                "username" => $staffUsername,
+            ];
+
+            return $this->makeCall($method, $data);
+        }
+
         //NOTE: not confirmed // Too Long to retrieve
         public function getAccounts(){
             // ini_set('default_socket_timeout', 600);
@@ -357,12 +370,98 @@
             
             return $this->makeCall($method, []);
         }
+        
+        public function findAccount($acctNumber){
+            $method = "FindAccount";
+
+            $data = [
+                "acctnumber"=>$acctNumber
+            ];
+            
+            $account = $this->makeCall($method, $data);
+            
+            if($account){
+                return $account[0];
+            }else{
+                return false;
+            }
+        }
+
+        //NOTE: not creating
+        public function createAccount($accountName, $email, $phone, $salesPerson, $country, $state, $acctType, $custClass, $custCategory, $origin, $department, $branch, $bizSector, $genbizgrp, $custPostGrp, $vatPostGrp, $staffUsername){
+            $method = "CreateAccount";
+
+            $data = [
+                "accountName"=>$accountName,
+                "email"=>$email,
+                "phone"=>$phone,
+                "salesperson"=>$salesPerson,
+                "country"=>$country,
+                "state"=>$state,
+                "acctType"=>$acctType,
+                "custClass"=>$custClass,
+                "custCategory"=>$custCategory,
+                "origin"=>$origin,
+                "department"=>$department,
+                "branch"=>$branch,
+                "bizSector"=>$bizSector,
+                "genbizgrp"=> $genbizgrp,
+                "custPostGrp"=>$custPostGrp,
+                "vatPostGrp"=>$vatPostGrp,
+                "username"=>$staffUsername
+            ];
+
+            return $this->makeCall($method, $data);
+        }
 
         //NOTE: Too long to retrieve
         public function getLeads(){
             $method = "GetLeads";
             
             return $this->makeCall($method, []);
+        }
+        
+        public function findLead($fullname){
+            $method = "FindLead";
+
+            $data = [
+                "fullname"=>$fullname
+            ];
+            
+            $lead = $this->makeCall($method, $data);
+            
+            if($lead){
+                return $lead[0];
+            }else{
+                return false;
+            }
+        }
+
+        public function createLead($companyName, $firstname, $lastname, $category, $bizSector, $email, $bizPhone, $mobilePhone, $department, $dimension, $branch, $state, $prodOrService, $purchaseDate, $saleOrServiceMarketer, $staffUsername){
+            $method = "CreateLead";
+
+            $purchaseDate = new \Carbon\Carbon($purchaseDate);
+
+            $data = [
+                "companyName"=>$companyName,
+                "firstname"=>$firstname,
+                "lastname"=>$lastname,
+                "category"=>$category,
+                "bizSector"=>$bizSector,
+                "email"=>$email,
+                "bizPhone"=>$bizPhone,
+                "mobilePhone"=>$mobilePhone,
+                "department"=>$department,
+                "dimension"=>$dimension,
+                "branch"=>$branch,
+                "state"=>$state,
+                "prodOrService"=>$prodOrService,
+                "purchaseDate"=> $purchaseDate->toW3cString(),
+                "saleOrServiceMarketer"=>$saleOrServiceMarketer,
+                "username"=>$staffUsername
+            ];
+
+            return $this->makeCall($method, $data);
         }
 
         //NOTE: Method does not exist
@@ -372,10 +471,77 @@
             return $this->makeCall($method, []);
         }
 
+        //NOTE: Method does not exist
+        public function findOpportunity($topic){
+            $method = "FindOpportunity";
+
+            $data = [
+                "topic"=>$topic
+            ];
+            
+            $opportunity = $this->makeCall($method, $data);
+            
+            if($opportunity){
+                return $opportunity[0];
+            }else{
+                return false;
+            }
+        }
+
+        //NOTE: Method always returns false
+        public function createOpportunity($topic, $customerNumber, $dimension, $estCloseDate, $probability, $rating, $salesperson, $staffUsername){
+            $method = "CreateOpportuinity";
+
+            $estCloseDate = new \Carbon\Carbon($estCloseDate);
+
+            $data = [
+                "topic"=>$topic,
+                "customerNumber"=>$customerNumber,
+                "dimension"=>$dimension,
+                "estCloseDate"=> $estCloseDate->toW3cString(),
+                "probability"=>intval($probability),
+                "rating"=>$rating,
+                "salesperson"=>$salesperson,
+                "username"=>$staffUsername
+            ];
+
+            return $this->makeCall($method, $data);
+        }
+
         public function getContacts(){
             $method = "GetContacts";
             
             return $this->makeCall($method, []);
+        }
+
+        public function findContact($contactFullName){
+            $method = "FindContact";
+
+            $data = [
+                "fullname"=>$contactFullName
+            ];
+            
+            $contact = $this->makeCall($method, $data);
+            
+            if($contact){
+                return $contact[0];
+            }else{
+                return false;
+            }
+        }
+
+        public function createContact($firstname, $lastname, $email, $bizPhone, $staffUsername){
+            $method = "CreateContact";
+
+            $data = [
+                "firstname"=>$firstname,
+                "lastname"=>$lastname,
+                "email"=>$email,
+                "bizPhone"=>$bizPhone,
+                "username"=>$staffUsername
+            ];
+
+            return $this->makeCall($method, $data);
         }
 
         //NOTE: Quotes don't return usefull info
@@ -385,16 +551,109 @@
             return $this->makeCall($method, []);
         }
 
+        public function findQuote($quoteNumber){
+            $method = "FindQuote";
+
+            $data = [
+                "number"=>$quoteNumber
+            ];
+            
+            $quote = $this->makeCall($method, $data);
+            
+            if($quote){
+                return $quote[0];
+            }else{
+                return false;
+            }
+        }
+
+        //NOTE: Not working. always returning false
+        public function createQuote($quoteName, $priceListName, $dimension, $department, $salesPerson, $branch, $customerNumber){
+            $method = "CreateQuote";
+
+            $data = [
+                "name"=>$quoteName,
+                "priceList"=>$priceListName,
+                "dimension"=>$dimension,
+                "department"=>$department,
+                "salesperson"=>$salesPerson,
+                "branch"=>$branch,
+                "customer"=>$customerNumber
+            ];
+
+            return $this->makeCall($method, $data);
+        }
+
         public function getOrders(){
             $method = "GetOrders";
             
             return $this->makeCall($method, []);
         }
 
-        public function getProduct(){
-            $method = "GetProduct";
+        public function findOrder($orderNumber){
+            $method = "FindOrder";
+
+            $data = [
+                "number"=>$orderNumber
+            ];
             
-            return $this->makeCall($method, []);
+            $order = $this->makeCall($method, $data);
+
+            if($order){
+                return $order[0];
+            }else{
+                return false;
+            }
         }
 
+        public function createOrder($orderName, $customerNumber, $dimension, $priceListName, $department, $branch, $priceIncludeVat, $staffUsername){
+            $method = "CreateOrder";
+
+            $data = [
+                "name"=>$orderName,
+                "customer"=>$customerNumber,
+                "dimension"=>$dimension,
+                "priceList"=>$priceListName,
+                "department"=>$department,
+                "branch"=>$branch,
+                "priceIncludeVat"=>$priceIncludeVat,
+                "username"=>$staffUsername
+            ];
+
+            return $this->makeCall($method, $data);
+        }
+
+        public function findProduct($productName){
+            $method = "FindProduct";
+
+            $data = [
+                "productname"=>$productName
+            ];
+            
+            $product = $this->makeCall($method, $data);
+
+            if($product){
+                return $product[0];
+            }else{
+                return false;
+            }
+        }
+
+        //NOTE: works, both doesn't reflect in list
+        public function createAppointment($customerNumber, $subject, $dimension, $startTime, $endTime, $staffUsername){
+            $method = "CreateServiceAppointment";
+
+            $startTime = new \Carbon\Carbon($startTime);
+            $endTime = new \Carbon\Carbon($endTime);
+            $data = [
+                "regarding" => $customerNumber,
+                "subject" => $subject,
+                "dimention" => $dimension,
+                "StartTime" => $startTime->toW3cString(),
+                "EndTime" => $endTime->toW3cString(),
+                "username" => $staffUsername,
+            ];
+
+            return $this->makeCall($method, $data);
+        }
 	}

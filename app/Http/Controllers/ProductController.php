@@ -18,4 +18,25 @@ class ProductController extends BaseController
         return response()->json($r, 200);
         
     }
+
+    public function findProduct($product_name){
+        $SC = new SoapConnect();
+        $product = $SC->findProduct($product_name);
+
+        if($product){
+            $data = [
+                "success"=>true,
+                "message"=>"product successfully retrieved",
+                "data"=>$product
+            ];
+        }else{
+            $data = [
+                "success"=>false,
+                "message"=>"could not find product",
+                "type"=>"not_found"
+            ];
+        }
+
+        return response()->json($data, 200);
+    }
 }
