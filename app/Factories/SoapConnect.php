@@ -505,7 +505,6 @@
             }
         }
 
-        //NOTE: Method always returns false
         public function createOpportunity($topic, $customerNumber, $dimension, $estCloseDate, $probability, $rating, $salesperson, $description, $staffUsername){
             $method = "CreateOpportuinity";
 
@@ -513,7 +512,7 @@
 
             $data = [
                 "topic"=>$topic,
-                "customerNumber"=>$customerNumber,
+                "customer"=>$customerNumber,
                 "dimension"=>$dimension,
                 "estCloseDate"=> $estCloseDate->toW3cString(),
                 "probability"=>intval($probability),
