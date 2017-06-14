@@ -506,7 +506,7 @@
         }
 
         //NOTE: Method always returns false
-        public function createOpportunity($topic, $customerNumber, $dimension, $estCloseDate, $probability, $rating, $salesperson, $staffUsername){
+        public function createOpportunity($topic, $customerNumber, $dimension, $estCloseDate, $probability, $rating, $salesperson, $description, $staffUsername){
             $method = "CreateOpportuinity";
 
             $estCloseDate = new \Carbon\Carbon($estCloseDate);
@@ -519,6 +519,7 @@
                 "probability"=>intval($probability),
                 "rating"=>$rating,
                 "salesperson"=>$salesperson,
+                "description"=>$description,
                 "username"=>$staffUsername
             ];
 

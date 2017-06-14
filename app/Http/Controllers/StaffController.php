@@ -389,13 +389,14 @@ class StaffController extends BaseController
     }
 
     public function createOpportunity(Request $req){
-         $post = $req->only(['topic', 'customerNumber', 'dimension', 'estCloseDate', 'probability', 'rating', 'salesPerson', 'staffUsername']);
+         $post = $req->only(['topic', 'customerNumber', 'dimension', 'estCloseDate', 'probability', 'rating', 'salesPerson', 'description', 'staffUsername']);
 
          $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
          $ratingOptions = ['Hot', 'Warm', 'Cold'];
          $rules = [
             'topic' => "required", 
             'customerNumber' => "required", 
+            'description' => "required", 
             'dimension' =>  ['required', Rule::in($dimensionOptions)], 
             'estCloseDate' => "required|date",
             'probability' => "required|numeric|between:1,100",
@@ -424,18 +425,18 @@ class StaffController extends BaseController
         $staffUsername = $req->get('user')->username;
 
         $SC = new SoapConnect();
-        $contact = $SC->createOpportunity($topic, $customerNumber, $dimension, $estCloseDate, $probability, $rating, $salesPerson, $staffUsername);
+        $opportunity = $SC->createOpportunity($topic, $customerNumber, $dimension, $estCloseDate, $probability, $rating, $salesPerson, $description, $staffUsername);
 
-        if($contact){
+        if($opportunity){
             $data = [
                 "success"=>true,
-                "message"=>"successfully created contact",
-                "data"=>$contact
+                "message"=>"successfully created opportunity",
+                "data"=>$opportunity
             ];
         }else{
             $data = [
                 "success"=>false,
-                "message"=>"contact was not created",
+                "message"=>"opportunity was not created",
                 "type"=>"error_creating"
             ];
         }
@@ -593,7 +594,7 @@ class StaffController extends BaseController
         foreach ($post as $key => $value) {
             $$key = $value;
         }
-        
+
         $staffUsername = $req->get('user')->username;
 
         $SC = new SoapConnect();
