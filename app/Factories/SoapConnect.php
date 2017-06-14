@@ -591,8 +591,7 @@
             }
         }
 
-        //NOTE: Not working. always returning false
-        public function createQuote($quoteName, $priceListName, $dimension, $department, $salesPerson, $branch, $customerNumber){
+        public function createQuote($quoteName, $priceListName, $dimension, $department, $salesPerson, $branch, $customerNumber, $staffUsername){
             $method = "CreateQuote";
 
             $data = [
@@ -602,7 +601,8 @@
                 "department"=>$department,
                 "salesperson"=>$salesPerson,
                 "branch"=>$branch,
-                "customer"=>$customerNumber
+                "customer"=>$customerNumber,
+                "username"=>$staffUsername
             ];
 
             return $this->makeCall($method, $data);

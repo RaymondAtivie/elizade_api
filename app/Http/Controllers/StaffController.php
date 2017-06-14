@@ -593,9 +593,11 @@ class StaffController extends BaseController
         foreach ($post as $key => $value) {
             $$key = $value;
         }
+        
+        $staffUsername = $req->get('user')->username;
 
         $SC = new SoapConnect();
-        $quote = $SC->createQuote($quoteName, $priceListName, $dimension, $department, $salesPerson, $branch, $customerNumber);
+        $quote = $SC->createQuote($quoteName, $priceListName, $dimension, $department, $salesPerson, $branch, $customerNumber, $staffUsername);
 
         if($quote){
             $data = [
