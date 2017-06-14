@@ -522,8 +522,6 @@
                 "username"=>$staffUsername
             ];
 
-            print_r($data);
-
             return $this->makeCall($method, $data);
         }
 
@@ -606,8 +604,6 @@
                 "branch"=>$branch,
                 "customer"=>$customerNumber
             ];
-
-            print_r($data);
 
             return $this->makeCall($method, $data);
         }
