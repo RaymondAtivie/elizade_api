@@ -13,9 +13,12 @@ class StaffController extends BaseController
         // TODO: Bring all SoapConnect objects to constructor
     }
 
-    public function getAccounts(){
+    //ACCOUNTS
+    public function getAccounts(Request $req){
+        $staffUsername = $req->get('user')->username;
+
         $SC = new SoapConnect();
-        $accounts = $SC->getAccounts();
+        $accounts = $SC->getAccounts($staffUsername);
 
         $data = [
             "success"=>true,
@@ -90,13 +93,14 @@ class StaffController extends BaseController
         }
 
         $staffUsername = $req->get('user')->username;
+        $staffFullname = $req->get('user')->name;
 
         foreach ($post as $key => $value) {
             $$key = $value;
         }
 
         $SC = new SoapConnect();
-        $account = $SC->createAccount($accountName, $email, $phone, $salesPerson, $country, $state, $acctType, $customerClass, $customerCategory, $origin, $department, $branch, $businessSector, $genBusinessGrp, $customerPostGrp, $vatPostGrp, $staffUsername);
+        $account = $SC->createAccount($accountName, $email, $phone, $staffFullname, $country, $state, $acctType, $customerClass, $customerCategory, $origin, $department, $branch, $businessSector, $genBusinessGrp, $customerPostGrp, $vatPostGrp, $staffUsername);
 
         if($account){
             $data = [
@@ -115,9 +119,12 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getLeads(){
+    //LEADS
+    public function getLeads(Request $req){
+        $staffUsername = $req->get('user')->username;
+
         $SC = new SoapConnect();
-        $leads = $SC->getLeads();
+        $leads = $SC->getLeads($staffUsername);
 
         $data = [
             "success"=>true,
@@ -212,9 +219,12 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getCases(){
+    //CASES
+    public function getCases(Request $req){
+        $staffUsername = $req->get('user')->username;
+
         $SC = new SoapConnect();
-        $cases = $SC->getCases();
+        $cases = $SC->getStaffCases($staffUsername);
 
         $data = [
             "success"=>true,
@@ -270,9 +280,12 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getAppointments(){
+    //APPOINTMENTS
+    public function getAppointments(Request $req){
+        $staffUsername = $req->get('user')->username;
+
         $SC = new SoapConnect();
-        $appointments = $SC->getAppointments();
+        $appointments = $SC->getStaffAppointments($staffUsername);
 
         $data = [
             "success"=>true,
@@ -338,9 +351,12 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getOpportunities(){
+    //OPPORTUNITY
+    public function getOpportunities(Request $req){
+        $staffUsername = $req->get('user')->username;
+
         $SC = new SoapConnect();
-        $opportunities = $SC->getOpportunities();
+        $opportunities = $SC->getOpportunities($staffUsername);
 
         $data = [
             "success"=>true,
@@ -427,9 +443,12 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getContacts(){
+    //CONTACTS
+    public function getContacts(Request $req){
+        $staffUsername = $req->get('user')->username;
+
         $SC = new SoapConnect();
-        $contacts = $SC->getContacts();
+        $contacts = $SC->getContacts($staffUsername);
 
         $data = [
             "success"=>true,
@@ -507,9 +526,12 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getQuotes(){
+    //QUOTES
+    public function getQuotes(Request $req){
+        $staffUsername = $req->get('user')->username;
+
         $SC = new SoapConnect();
-        $quotes = $SC->getQuotes();
+        $quotes = $SC->getQuotes($staffUsername);
 
         $data = [
             "success"=>true,
@@ -573,7 +595,7 @@ class StaffController extends BaseController
         }
 
         $SC = new SoapConnect();
-        $quote = $SC->createQuote($quoteName, $customerNumber, $dimension, $priceListName, $department, $branch, $salesPerson);
+        $quote = $SC->createQuote($quoteName, $priceListName, $dimension, $department, $salesPerson, $branch, $customerNumber);
 
         if($quote){
             $data = [
@@ -592,9 +614,12 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getOrders(){
+    //ORDERS
+    public function getOrders(Request $req){
+        $staffUsername = $req->get('user')->username;
+
         $SC = new SoapConnect();
-        $orders = $SC->getOrders();
+        $orders = $SC->getOrders($staffUsername);
 
         $data = [
             "success"=>true,

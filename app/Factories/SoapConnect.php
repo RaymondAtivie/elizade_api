@@ -47,7 +47,7 @@
             }
         }
 
-        //GET GENERAL DATA FUNCTIONS
+        // GET GENERAL DATA FUNCTIONS ////////////////
 
         public function getCountries(){
             $method = "GetCountries";
@@ -210,7 +210,7 @@
         }
 
 
-        //CUSTOMERS FUNCTIONS
+        // CUSTOMERS FUNCTIONS ////////////////
 
         public function createCase($customerNumber, $title, $description){
             $method = "CreateCase";
@@ -299,7 +299,7 @@
         }
 
 
-        ////////////////////STAFF FUNCTIONS
+        // STAFF FUNCTIONS ////////////////
 
         public function staffLogin($username, $password){
             $method = "Login";
@@ -350,6 +350,16 @@
             }
         }
 
+        public function getStaffCases($staffUsername){
+            $method = "StaffGetCases";
+
+            $data = [
+                "username"=>$staffUsername
+            ];
+            
+            return $this->makeCall($method, $data);
+        }
+
         public function staffCreateCase($customerNumber, $description, $title, $staffUsername){
             $method = "StaffCreateCase";
 
@@ -363,12 +373,14 @@
             return $this->makeCall($method, $data);
         }
 
-        //NOTE: not confirmed // Too Long to retrieve
-        public function getAccounts(){
-            // ini_set('default_socket_timeout', 600);
+        public function getAccounts($staffUsername){
             $method = "GetAccounts";
+
+            $data = [
+                'username'=>$staffUsername
+            ];
             
-            return $this->makeCall($method, []);
+            return $this->makeCall($method, $data);
         }
         
         public function findAccount($acctNumber){
@@ -387,7 +399,6 @@
             }
         }
 
-        //NOTE: not creating
         public function createAccount($accountName, $email, $phone, $salesPerson, $country, $state, $acctType, $custClass, $custCategory, $origin, $department, $branch, $bizSector, $genbizgrp, $custPostGrp, $vatPostGrp, $staffUsername){
             $method = "CreateAccount";
 
@@ -414,11 +425,14 @@
             return $this->makeCall($method, $data);
         }
 
-        //NOTE: Too long to retrieve
-        public function getLeads(){
+        public function getLeads($staffUsername){
             $method = "GetLeads";
+
+            $data = [
+                'username'=>$staffUsername
+            ];
             
-            return $this->makeCall($method, []);
+            return $this->makeCall($method, $data);
         }
         
         public function findLead($fullname){
@@ -464,11 +478,14 @@
             return $this->makeCall($method, $data);
         }
 
-        //NOTE: Method does not exist
-        public function getOpportunities(){
+        public function getOpportunities($staffUsername){
             $method = "GetOpportunities";
+
+            $data = [
+                "username" => $staffUsername
+            ];
             
-            return $this->makeCall($method, []);
+            return $this->makeCall($method, $data);
         }
 
         //NOTE: Method does not exist
@@ -505,13 +522,19 @@
                 "username"=>$staffUsername
             ];
 
+            print_r($data);
+
             return $this->makeCall($method, $data);
         }
 
-        public function getContacts(){
+        public function getContacts($staffUsername){
             $method = "GetContacts";
+
+            $data = [
+                "username"=>$staffUsername
+            ];
             
-            return $this->makeCall($method, []);
+            return $this->makeCall($method, $data);
         }
 
         public function findContact($contactFullName){
@@ -544,11 +567,14 @@
             return $this->makeCall($method, $data);
         }
 
-        //NOTE: Quotes don't return usefull info
-        public function getQuotes(){
-            $method = "GetQuotes";
+        public function getQuotes($staffUsername){
+            $method = "StaffGetQuotes";
+
+            $data = [
+                "username" => $staffUsername
+            ];
             
-            return $this->makeCall($method, []);
+            return $this->makeCall($method, $data);
         }
 
         public function findQuote($quoteNumber){
@@ -581,13 +607,19 @@
                 "customer"=>$customerNumber
             ];
 
+            print_r($data);
+
             return $this->makeCall($method, $data);
         }
 
-        public function getOrders(){
-            $method = "GetOrders";
+        public function getOrders($staffUsername){
+            $method = "StaffGetOrders";
+
+            $data = [
+                "username"=>$staffUsername
+            ];
             
-            return $this->makeCall($method, []);
+            return $this->makeCall($method, $data);
         }
 
         public function findOrder($orderNumber){
@@ -637,6 +669,16 @@
             }else{
                 return false;
             }
+        }
+
+        public function getStaffAppointments($staffUsername){
+            $method = "StaffGetAppointments";
+
+            $data = [
+                "username"=>$staffUsername
+            ];
+            
+            return $this->makeCall($method, $data);
         }
 
         //NOTE: works, both doesn't reflect in list

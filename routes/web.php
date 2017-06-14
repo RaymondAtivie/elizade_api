@@ -21,7 +21,8 @@ Route::get('/phpinfo', function(){
     phpinfo();
 });
 
-
+#737Aviation
+#Aviation737
 Route::post("/login", "AuthController@login");
 Route::post("/signup", "AuthController@signup");
 
@@ -51,7 +52,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post("/cases", "CaseController@createCase");
 });
 
-
 Route::group(['middleware' => 'auth.staff', "prefix"=>"staff"], function() {
 
     Route::post("/leads", "StaffController@createLead");    
@@ -69,8 +69,8 @@ Route::group(['middleware' => 'auth.staff', "prefix"=>"staff"], function() {
     Route::post("/appointments", "StaffController@createAppointment");    
     Route::get("/appointments", "StaffController@getAppointments");    
 
-    // Route::post("/opportunities", "StaffController@createOpportunity");    
-    // Route::get("/opportunities", "StaffController@getOpportunities");    
+    Route::post("/opportunities", "StaffController@createOpportunity");    
+    Route::get("/opportunities", "StaffController@getOpportunities");    
     // Route::get("/opportunities/{topic}", "StaffController@findOpportunity");    
 
     Route::post("/contacts", "StaffController@createContact");    
@@ -92,7 +92,9 @@ Route::group(['middleware' => 'auth.staff', "prefix"=>"staff"], function() {
 
 Route::get('/try', function(){
     $sp = new SoapConnect();
-    $p = $sp->customerExist("CUST013643");
+    // $p = $sp->customerExist("CUST013643");
+    $p = $sp->getStaffAppointments("Nav");
+    // $p = $sp->createAppointment("CUST013643", "TEST ARES", "Aftersales", "4/4/2019 10:11:11", "4/4/2019 11:11:11", "Nav");
 
     return response()->json($p, 200);
 });

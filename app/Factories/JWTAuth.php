@@ -23,7 +23,7 @@
             // create payload
             $payload = [
                 "iss"=> config('jwt.iss'),
-                "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*24)) ),
+                "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*240)) ),
                 "iat"=> time(),
                 "sub"=> $this->user->id,
             ];
@@ -42,7 +42,7 @@
             // create payload
             $payload = [
                 "iss"=> config('jwt.iss'),
-                "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*24)) ),
+                "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*240)) ),
                 "iat"=> time(),
                 "sub"=> $this->user,
             ];
