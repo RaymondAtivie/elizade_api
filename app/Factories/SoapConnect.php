@@ -686,7 +686,7 @@
             $data = [
                 "regarding" => $customerNumber,
                 "subject" => $subject,
-                "dimention" => $dimension,
+                "dimension" => $dimension,
                 "StartTime" => $startTime->toW3cString(),
                 "EndTime" => $endTime->toW3cString(),
                 "username" => $staffUsername,

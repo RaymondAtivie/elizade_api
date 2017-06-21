@@ -157,7 +157,7 @@ class StaffController extends BaseController
     }
 
     public function createLead(Request $req){
-         $post = $req->only(['companyName', 'firstname', 'lastname', 'category', 'buinessSector', 'email', 'businessPhone', 'mobilePhone', 'department', 'dimension', 'branch', 'state', 'prodOrService', 'likelyPurchaseDate', 'salesPerson']);
+         $post = $req->only(['companyName', 'firstname', 'lastname', 'category', 'businessSector', 'email', 'businessPhone', 'mobilePhone', 'department', 'dimension', 'branch', 'state', 'prodOrService', 'likelyPurchaseDate', 'salesPerson']);
 
          $categoryOptions = ["Individual", "Corporate"];
          $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
@@ -166,7 +166,7 @@ class StaffController extends BaseController
             'firstname' => "required",
             'lastname' => "required",
             'category' => ['required', Rule::in($categoryOptions)],
-            'buinessSector' => "required",
+            'businessSector' => "required",
             'email' => "required|email",
             'businessPhone' => "required",
             'mobilePhone' => "required",
@@ -200,7 +200,7 @@ class StaffController extends BaseController
         }
 
         $SC = new SoapConnect();
-        $lead = $SC->createLead($companyName, $firstname, $lastname, $category, $buinessSector, $email, $businessPhone, $mobilePhone, $department, $dimension, $branch, $state, $prodOrService, $likelyPurchaseDate, $salesPerson, $staffUsername);
+        $lead = $SC->createLead($companyName, $firstname, $lastname, $category, $businessSector, $email, $businessPhone, $mobilePhone, $department, $dimension, $branch, $state, $prodOrService, $likelyPurchaseDate, $salesPerson, $staffUsername);
 
         if($lead){
             $data = [
