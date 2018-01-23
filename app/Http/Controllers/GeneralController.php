@@ -7,11 +7,13 @@ use App\Factories\SoapConnect;
 
 class GeneralController extends BaseController
 {
-    function __construct(){
+    public function __construct()
+    {
         parent::__construct();
     }
 
-    public function getCountries(){
+    public function getCountries()
+    {
         $SC = new SoapConnect();
         $result = $SC->getCountries();
 
@@ -24,7 +26,8 @@ class GeneralController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getStates(){
+    public function getStates()
+    {
         $SC = new SoapConnect();
         $result = $SC->getStates();
 
@@ -37,7 +40,8 @@ class GeneralController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getDepartments(){
+    public function getDepartments()
+    {
         $SC = new SoapConnect();
         $result = $SC->getDepartments();
 
@@ -50,7 +54,8 @@ class GeneralController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getBranches(){
+    public function getBranches()
+    {
         $SC = new SoapConnect();
         $result = $SC->getBranches();
 
@@ -63,7 +68,8 @@ class GeneralController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getBusinessSectors(){
+    public function getBusinessSectors()
+    {
         $SC = new SoapConnect();
         $result = $SC->getBusinessSectors();
 
@@ -76,7 +82,8 @@ class GeneralController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getGenBizPostingGrp(){
+    public function getGenBizPostingGrp()
+    {
         $SC = new SoapConnect();
         $result = $SC->getGenBizPostingGrp();
 
@@ -89,7 +96,8 @@ class GeneralController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getCustPostingGr(){
+    public function getCustPostingGr()
+    {
         $SC = new SoapConnect();
         $result = $SC->getCustPostingGr();
 
@@ -102,7 +110,8 @@ class GeneralController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getVatPostingGrp(){
+    public function getVatPostingGrp()
+    {
         $SC = new SoapConnect();
         $result = $SC->getVatPostingGrp();
 
@@ -115,7 +124,8 @@ class GeneralController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getPricelists(){
+    public function getPricelists()
+    {
         $SC = new SoapConnect();
         $result = $SC->getPricelists();
 
@@ -128,9 +138,24 @@ class GeneralController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function getSalespersons(){
+    public function getSalespersons()
+    {
         $SC = new SoapConnect();
         $result = $SC->getSalespersons();
+
+        $data = [
+            "success"=>true,
+            "message"=>"successfully retrieved",
+            "data"=>$result
+        ];
+
+        return response()->json($data, 200);
+    }
+    
+    public function getCars()
+    {
+        $SC = new SoapConnect();
+        $result = $SC->getCars();
 
         $data = [
             "success"=>true,

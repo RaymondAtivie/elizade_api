@@ -178,6 +178,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Artisaninweb\SoapWrapper\ServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class,
 
     ],
 

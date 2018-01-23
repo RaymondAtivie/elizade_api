@@ -1,30 +1,33 @@
 <?php 
 
-	namespace App\Factories;
+    namespace App\Factories;
 
-    use SoapClient;
+use SoapClient;
 
-	class SoapConnect
-	{
-		private $serviceUrl;
-        private $soapClient;
+class SoapConnect
+{
+    private $serviceUrl;
+    private $soapClient;
 
-        public function __construct(){
-            $this->serviceUrl = "http://crm.elizade.net:5050/Service1.svc?wsdl";
-            $this->soapClient = new SoapClient($this->serviceUrl, [
+    public function __construct()
+    {
+        $this->serviceUrl = "http://crm.elizade.net:5050/Service1.svc?wsdl";
+        $this->soapClient = new SoapClient($this->serviceUrl, [
                     'trace' =>true,
                     'connection_timeout' => 500000,
                     'cache_wsdl' => WSDL_CACHE_NONE,
                     'keep_alive' => false
                 ]);
-        }
+    }
 
-        public function showMethods(){
-            return $this->soapClient->__getFunctions();
-        }
+    public function showMethods()
+    {
+        return $this->soapClient->__getFunctions();
+    }
 
-        private function makeNewCall($method, $data){
-            // $this->soapWrapper->add('CRW', function ($service) {
+    private function makeNewCall($method, $data)
+    {
+        // $this->soapWrapper->add('CRW', function ($service) {
             //     $service
             //         ->wsdl($this->serviceUrl)
             //         ->trace(true);
@@ -33,376 +36,414 @@
             // $response = $this->soapWrapper->call('CRW.'.$method, $data);
 
             // return $response;
+    }
+
+    private function makeCall($method, $data)
+    {
+        try {
+            $response = $this->soapClient->$method($data);
+            return json_decode($response->{$method."Result"});
+        } catch (Exception $e) {
+            echo "<h1>Cannot connnect to Loan Application Server Right now. Please try again Later<h1>";
+            die();
         }
+    }
 
-        private function makeCall($method, $data){
-            try {
+    // GET GENERAL DATA FUNCTIONS ////////////////
 
-                $response = $this->soapClient->$method($data);
-                return json_decode($response->{$method."Result"});
+    public function getCountries()
+    {
+        $method = "GetCountries";
 
-            } catch (Exception $e) {
-                echo "<h1>Cannot connnect to Loan Application Server Right now. Please try again Later<h1>";
-                die();
+        $countries = $this->makeCall($method, []);
+
+        if ($countries) {
+            $_countries = [];
+            foreach ($countries as $c) {
+                $_countries[] = $c->Country;
             }
+            return $_countries;
+        } else {
+            return false;
         }
+    }
 
-        // GET GENERAL DATA FUNCTIONS ////////////////
+    public function getStates()
+    {
+        $method = "GetStates";
 
-        public function getCountries(){
-            $method = "GetCountries";
+        $states = $this->makeCall($method, []);
 
-            $countries = $this->makeCall($method, []);
-
-            if($countries){
-                $_countries = [];
-                foreach ($countries as $c) {
-                    $_countries[] = $c->Country;
-                }
-                return $_countries;
-            }else{
-                return false;
+        if ($states) {
+            $_states = [];
+            foreach ($states as $c) {
+                $_states[] = $c->State;
             }
+            return $_states;
+        } else {
+            return false;
         }
+    }
 
-        public function getStates(){
-            $method = "GetStates";
+    public function getDepartments()
+    {
+        $method = "GetDepartments";
 
-            $states = $this->makeCall($method, []);
+        $departments = $this->makeCall($method, []);
 
-            if($states){
-                $_states = [];
-                foreach ($states as $c) {
-                    $_states[] = $c->State;
-                }
-                return $_states;
-            }else{
-                return false;
+        if ($departments) {
+            $_departments = [];
+            foreach ($departments as $c) {
+                $_departments[] = $c->Department;
             }
+            return $_departments;
+        } else {
+            return false;
         }
+    }
 
-        public function getDepartments(){
-            $method = "GetDepartments";
+    public function getBranches()
+    {
+        $method = "GetBranches";
 
-            $departments = $this->makeCall($method, []);
+        $branches = $this->makeCall($method, []);
 
-            if($departments){
-                $_departments = [];
-                foreach ($departments as $c) {
-                    $_departments[] = $c->Department;
-                }
-                return $_departments;
-            }else{
-                return false;
+        if ($branches) {
+            $_branches = [];
+            foreach ($branches as $c) {
+                $_branches[] = $c->Branch;
             }
+            return $_branches;
+        } else {
+            return false;
         }
+    }
 
-        public function getBranches(){
-            $method = "GetBranches";
+    public function getBusinessSectors()
+    {
+        $method = "GetBusinessSectors";
 
-            $branches = $this->makeCall($method, []);
+        $bss = $this->makeCall($method, []);
 
-            if($branches){
-                $_branches = [];
-                foreach ($branches as $c) {
-                    $_branches[] = $c->Branch;
-                }
-                return $_branches;
-            }else{
-                return false;
+        if ($bss) {
+            $_bss = [];
+            foreach ($bss as $c) {
+                $_bss[] = $c->BusinessSector;
             }
+            return $_bss;
+        } else {
+            return false;
         }
+    }
 
-        public function getBusinessSectors(){
-            $method = "GetBusinessSectors";
+    public function getGenBizPostingGrp()
+    {
+        $method = "GetGenBizPostingGrp";
 
-            $bss = $this->makeCall($method, []);
+        $bss = $this->makeCall($method, []);
 
-            if($bss){
-                $_bss = [];
-                foreach ($bss as $c) {
-                    $_bss[] = $c->BusinessSector;
-                }
-                return $_bss;
-            }else{
-                return false;
+        if ($bss) {
+            $_bss = [];
+            foreach ($bss as $c) {
+                $_bss[] = $c->GenBusPostingGrp;
             }
+            return $_bss;
+        } else {
+            return false;
         }
+    }
 
-        public function getGenBizPostingGrp(){
-            $method = "GetGenBizPostingGrp";
+    public function getCustPostingGr()
+    {
+        $method = "GetCustPostingGrp";
 
-            $bss = $this->makeCall($method, []);
+        $bss = $this->makeCall($method, []);
 
-            if($bss){
-                $_bss = [];
-                foreach ($bss as $c) {
-                    $_bss[] = $c->GenBusPostingGrp;
-                }
-                return $_bss;
-            }else{
-                return false;
+        if ($bss) {
+            $_bss = [];
+            foreach ($bss as $c) {
+                $_bss[] = $c->CustomerPostingGrp;
             }
+            return $_bss;
+        } else {
+            return false;
         }
+    }
 
-        public function getCustPostingGr(){
-            $method = "GetCustPostingGrp";
+    public function getVatPostingGrp()
+    {
+        $method = "GetVatPostingGrp";
 
-            $bss = $this->makeCall($method, []);
+        $bss = $this->makeCall($method, []);
 
-            if($bss){
-                $_bss = [];
-                foreach ($bss as $c) {
-                    $_bss[] = $c->CustomerPostingGrp;
-                }
-                return $_bss;
-            }else{
-                return false;
+        if ($bss) {
+            $_bss = [];
+            foreach ($bss as $c) {
+                $_bss[] = $c->VatPostingGrp;
             }
+            return $_bss;
+        } else {
+            return false;
         }
+    }
 
-        public function getVatPostingGrp(){
-            $method = "GetVatPostingGrp";
+    public function getPricelists()
+    {
+        $method = "GetPricelists";
 
-            $bss = $this->makeCall($method, []);
+        $bss = $this->makeCall($method, []);
 
-            if($bss){
-                $_bss = [];
-                foreach ($bss as $c) {
-                    $_bss[] = $c->VatPostingGrp;
-                }
-                return $_bss;
-            }else{
-                return false;
+        if ($bss) {
+            $_bss = [];
+            foreach ($bss as $c) {
+                $_bss[] = $c->Name;
             }
+            return $_bss;
+        } else {
+            return false;
         }
+    }
 
-        public function getPricelists(){
-            $method = "GetPricelists";
+    public function getSalespersons()
+    {
+        $method = "GetSalespersons";
 
-            $bss = $this->makeCall($method, []);
+        $salesperson = $this->makeCall($method, []);
 
-            if($bss){
-                $_bss = [];
-                foreach ($bss as $c) {
-                    $_bss[] = $c->Name;
-                }
-                return $_bss;
-            }else{
-                return false;
+        if ($salesperson) {
+            $_salesperson = [];
+            foreach ($salesperson as $c) {
+                $_salesperson[] = $c->Salesperson;
             }
+            return $_salesperson;
+        } else {
+            return false;
         }
+    }
 
-        public function getSalespersons(){
-            $method = "GetSalespersons";
 
-            $salesperson = $this->makeCall($method, []);
+    public function getCars()
+    {
+        $method = "GetCars";
 
-            if($salesperson){
-                $_salesperson = [];
-                foreach ($salesperson as $c) {
-                    $_salesperson[] = $c->Salesperson;
-                }
-                return $_salesperson;
-            }else{
-                return false;
-            }
+        $cars = $this->makeCall($method, []);
+
+        if ($cars) {
+            return $cars;
+        } else {
+            return false;
         }
+    }
 
 
-        // CUSTOMERS FUNCTIONS ////////////////
+    // CUSTOMERS FUNCTIONS ////////////////
 
-        public function createCase($customerNumber, $title, $description){
-            $method = "CreateCase";
+    public function createCase($customerNumber, $title, $description)
+    {
+        $method = "CreateCase";
 
-            $data = [
+        $data = [
                 'accountnumber' => $customerNumber,
                 'description'   => $description,
                 'title'   => $title
             ];
             
-            $case = $this->makeCall($method, $data);
+        $case = $this->makeCall($method, $data);
 
-            if($case){
-                return $case[0];
-            }else{
-                return false;
-            }
+        if ($case) {
+            return $case[0];
+        } else {
+            return false;
         }
+    }
 
-        public function customerExist($customerNumber){
-            $method = "CustomerExist";
+    public function customerExist($customerNumber)
+    {
+        $method = "CustomerExist";
 
-            $data = [
+        $data = [
                 "customernumber" => $customerNumber
             ];
             
-            $r = $this->makeCall($method, $data);
+        $r = $this->makeCall($method, $data);
 
-            if($r){
-                return $r;
-            }else{
-                return false;
-            }
+        if ($r) {
+            return $r;
+        } else {
+            return false;
         }
+    }
 
-        public function findCase($ticketId){
-            $method = "FindCase";
+    public function findCase($ticketId)
+    {
+        $method = "FindCase";
 
-            $data = [
+        $data = [
                 "ticketid" => $ticketId
             ];
 
-            $case = $this->makeCall($method, $data);
+        $case = $this->makeCall($method, $data);
 
-            if($case){
-                return $case[0];
-            }else{
-                return false;
-            }
+        if ($case) {
+            return $case[0];
+        } else {
+            return false;
         }
+    }
 
-        public function getCases(){
-            $method = "GetCases";
+    public function getCases()
+    {
+        $method = "GetCases";
             
-            return $this->makeCall($method, []);
-        }
+        return $this->makeCall($method, []);
+    }
 
-        public function getAppointments(){
-            $method = "GetAppointments";
+    public function getAppointments()
+    {
+        $method = "GetAppointments";
             
-            return $this->makeCall($method, []);
-        }
+        return $this->makeCall($method, []);
+    }
 
-        public function getProducts(){
-            $method = "GetProducts";
+    public function getProducts()
+    {
+        $method = "GetProducts";
             
-            return $this->makeCall($method, []);
-        }
+        return $this->makeCall($method, []);
+    }
 
-        public function makeQuoteRequest($customerNumber, $productName, $quantity){
-            $method = "QuoteRequest";
+    public function makeQuoteRequest($customerNumber, $productName, $quantity)
+    {
+        $method = "QuoteRequest";
 
-            $data = [
+        $data = [
                 'custno' => $customerNumber,
                 'product'   => $productName,
                 'quantity'   => intval($quantity)
             ];
 
-            $r = $this->makeCall($method, $data);
+        $r = $this->makeCall($method, $data);
 
-            if($r){
-                return true;
-            }else{
-                return false;
-            }
+        if ($r) {
+            return true;
+        } else {
+            return false;
         }
+    }
 
 
-        // STAFF FUNCTIONS ////////////////
+    // STAFF FUNCTIONS ////////////////
 
-        public function staffLogin($username, $password){
-            $method = "Login";
+    public function staffLogin($username, $password)
+    {
+        $method = "Login";
 
-            $data = [
+        $data = [
                 'username' => $username,
                 'password'   => $password
             ];
 
-            $r = $this->makeCall($method, $data);
+        $r = $this->makeCall($method, $data);
 
-            if($r){
-                return true;
-            }else{
-                return false;
-            }
+        if ($r) {
+            return true;
+        } else {
+            return false;
         }
+    }
 
-        public function staffDetails($username){
-            $method = "GetUserDetails";
+    public function staffDetails($username)
+    {
+        $method = "GetUserDetails";
 
-            $data = [
+        $data = [
                 'username' => $username
             ];
 
-            $r = $this->makeCall($method, $data);
+        $r = $this->makeCall($method, $data);
 
-            if($r){
-                return $r[0];
-            }else{
-                return false;
-            }
+        if ($r) {
+            return $r[0];
+        } else {
+            return false;
         }
+    }
 
-        public function getStaffDetails($username, $password){
-            if(!$this->staffLogin($username, $password)){
-                return false;
-            }
-            $name = $this->staffDetails($username);
+    public function getStaffDetails($username, $password)
+    {
+        if (!$this->staffLogin($username, $password)) {
+            return false;
+        }
+        $name = $this->staffDetails($username);
 
-            if($name){
-                return [
+        if ($name) {
+            return [
                     "name"=>$name->StaffName,
                     "username"=>$username,
                 ];
-            }else{
-                return false;
-            }
+        } else {
+            return false;
         }
+    }
 
-        public function getStaffCases($staffUsername){
-            $method = "StaffGetCases";
+    public function getStaffCases($staffUsername)
+    {
+        $method = "StaffGetCases";
 
-            $data = [
+        $data = [
                 "username"=>$staffUsername
             ];
             
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        public function staffCreateCase($customerNumber, $description, $title, $staffUsername){
-            $method = "StaffCreateCase";
+    public function staffCreateCase($customerNumber, $description, $title, $staffUsername)
+    {
+        $method = "StaffCreateCase";
 
-            $data = [
+        $data = [
                 "accountnumber" => $customerNumber,
                 "description" => $description,
                 "title" => $title,
                 "username" => $staffUsername,
             ];
 
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        public function getAccounts($staffUsername){
-            $method = "GetAccounts";
+    public function getAccounts($staffUsername)
+    {
+        $method = "GetAccounts";
 
-            $data = [
+        $data = [
                 'username'=>$staffUsername
             ];
             
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
         
-        public function findAccount($acctNumber){
-            $method = "FindAccount";
+    public function findAccount($acctNumber)
+    {
+        $method = "FindAccount";
 
-            $data = [
+        $data = [
                 "acctnumber"=>$acctNumber
             ];
             
-            $account = $this->makeCall($method, $data);
+        $account = $this->makeCall($method, $data);
             
-            if($account){
-                return $account[0];
-            }else{
-                return false;
-            }
+        if ($account) {
+            return $account[0];
+        } else {
+            return false;
         }
+    }
 
-        public function createAccount($accountName, $email, $phone, $salesPerson, $country, $state, $acctType, $custClass, $custCategory, $origin, $department, $branch, $bizSector, $genbizgrp, $custPostGrp, $vatPostGrp, $staffUsername){
-            $method = "CreateAccount";
+    public function createAccount($accountName, $email, $phone, $salesPerson, $country, $state, $acctType, $custClass, $custCategory, $origin, $department, $branch, $bizSector, $genbizgrp, $custPostGrp, $vatPostGrp, $staffUsername)
+    {
+        $method = "CreateAccount";
 
-            $data = [
+        $data = [
                 "accountName"=>$accountName,
                 "email"=>$email,
                 "phone"=>$phone,
@@ -422,41 +463,44 @@
                 "username"=>$staffUsername
             ];
 
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        public function getLeads($staffUsername){
-            $method = "GetLeads";
+    public function getLeads($staffUsername)
+    {
+        $method = "GetLeads";
 
-            $data = [
+        $data = [
                 'username'=>$staffUsername
             ];
             
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
         
-        public function findLead($fullname){
-            $method = "FindLead";
+    public function findLead($fullname)
+    {
+        $method = "FindLead";
 
-            $data = [
+        $data = [
                 "fullname"=>$fullname
             ];
             
-            $lead = $this->makeCall($method, $data);
+        $lead = $this->makeCall($method, $data);
             
-            if($lead){
-                return $lead[0];
-            }else{
-                return false;
-            }
+        if ($lead) {
+            return $lead[0];
+        } else {
+            return false;
         }
+    }
 
-        public function createLead($companyName, $firstname, $lastname, $category, $bizSector, $email, $bizPhone, $mobilePhone, $department, $dimension, $branch, $state, $prodOrService, $purchaseDate, $saleOrServiceMarketer, $staffUsername){
-            $method = "CreateLead";
+    public function createLead($companyName, $firstname, $lastname, $category, $bizSector, $email, $bizPhone, $mobilePhone, $department, $dimension, $branch, $state, $prodOrService, $purchaseDate, $saleOrServiceMarketer, $staffUsername)
+    {
+        $method = "CreateLead";
 
-            $purchaseDate = new \Carbon\Carbon($purchaseDate);
+        $purchaseDate = new \Carbon\Carbon($purchaseDate);
 
-            $data = [
+        $data = [
                 "companyName"=>$companyName,
                 "firstname"=>$firstname,
                 "lastname"=>$lastname,
@@ -475,42 +519,45 @@
                 "username"=>$staffUsername
             ];
 
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        public function getOpportunities($staffUsername){
-            $method = "GetOpportunities";
+    public function getOpportunities($staffUsername)
+    {
+        $method = "GetOpportunities";
 
-            $data = [
+        $data = [
                 "username" => $staffUsername
             ];
             
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        //NOTE: Method does not exist
-        public function findOpportunity($topic){
-            $method = "FindOpportunity";
+    //NOTE: Method does not exist
+    public function findOpportunity($topic)
+    {
+        $method = "FindOpportunity";
 
-            $data = [
+        $data = [
                 "topic"=>$topic
             ];
             
-            $opportunity = $this->makeCall($method, $data);
+        $opportunity = $this->makeCall($method, $data);
             
-            if($opportunity){
-                return $opportunity[0];
-            }else{
-                return false;
-            }
+        if ($opportunity) {
+            return $opportunity[0];
+        } else {
+            return false;
         }
+    }
 
-        public function createOpportunity($topic, $customerNumber, $dimension, $estCloseDate, $probability, $rating, $salesperson, $description, $staffUsername){
-            $method = "CreateOpportuinity";
+    public function createOpportunity($topic, $customerNumber, $dimension, $estCloseDate, $probability, $rating, $salesperson, $description, $staffUsername)
+    {
+        $method = "CreateOpportuinity";
 
-            $estCloseDate = new \Carbon\Carbon($estCloseDate);
+        $estCloseDate = new \Carbon\Carbon($estCloseDate);
 
-            $data = [
+        $data = [
                 "topic"=>$topic,
                 "customer"=>$customerNumber,
                 "dimension"=>$dimension,
@@ -522,39 +569,42 @@
                 "username"=>$staffUsername
             ];
 
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        public function getContacts($staffUsername){
-            $method = "GetContacts";
+    public function getContacts($staffUsername)
+    {
+        $method = "GetContacts";
 
-            $data = [
+        $data = [
                 "username"=>$staffUsername
             ];
             
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        public function findContact($contactFullName){
-            $method = "FindContact";
+    public function findContact($contactFullName)
+    {
+        $method = "FindContact";
 
-            $data = [
+        $data = [
                 "fullname"=>$contactFullName
             ];
             
-            $contact = $this->makeCall($method, $data);
+        $contact = $this->makeCall($method, $data);
             
-            if($contact){
-                return $contact[0];
-            }else{
-                return false;
-            }
+        if ($contact) {
+            return $contact[0];
+        } else {
+            return false;
         }
+    }
 
-        public function createContact($firstname, $lastname, $email, $bizPhone, $staffUsername){
-            $method = "CreateContact";
+    public function createContact($firstname, $lastname, $email, $bizPhone, $staffUsername)
+    {
+        $method = "CreateContact";
 
-            $data = [
+        $data = [
                 "firstname"=>$firstname,
                 "lastname"=>$lastname,
                 "email"=>$email,
@@ -562,39 +612,42 @@
                 "username"=>$staffUsername
             ];
 
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        public function getQuotes($staffUsername){
-            $method = "StaffGetQuotes";
+    public function getQuotes($staffUsername)
+    {
+        $method = "StaffGetQuotes";
 
-            $data = [
+        $data = [
                 "username" => $staffUsername
             ];
             
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        public function findQuote($quoteNumber){
-            $method = "FindQuote";
+    public function findQuote($quoteNumber)
+    {
+        $method = "FindQuote";
 
-            $data = [
+        $data = [
                 "number"=>$quoteNumber
             ];
             
-            $quote = $this->makeCall($method, $data);
+        $quote = $this->makeCall($method, $data);
             
-            if($quote){
-                return $quote[0];
-            }else{
-                return false;
-            }
+        if ($quote) {
+            return $quote[0];
+        } else {
+            return false;
         }
+    }
 
-        public function createQuote($quoteName, $priceListName, $dimension, $department, $salesPerson, $branch, $customerNumber, $staffUsername){
-            $method = "CreateQuote";
+    public function createQuote($quoteName, $priceListName, $dimension, $department, $salesPerson, $branch, $customerNumber, $staffUsername)
+    {
+        $method = "CreateQuote";
 
-            $data = [
+        $data = [
                 "name"=>$quoteName,
                 "priceList"=>$priceListName,
                 "dimension"=>$dimension,
@@ -605,39 +658,42 @@
                 "username"=>$staffUsername
             ];
 
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        public function getOrders($staffUsername){
-            $method = "StaffGetOrders";
+    public function getOrders($staffUsername)
+    {
+        $method = "StaffGetOrders";
 
-            $data = [
+        $data = [
                 "username"=>$staffUsername
             ];
             
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        public function findOrder($orderNumber){
-            $method = "FindOrder";
+    public function findOrder($orderNumber)
+    {
+        $method = "FindOrder";
 
-            $data = [
+        $data = [
                 "number"=>$orderNumber
             ];
             
-            $order = $this->makeCall($method, $data);
+        $order = $this->makeCall($method, $data);
 
-            if($order){
-                return $order[0];
-            }else{
-                return false;
-            }
+        if ($order) {
+            return $order[0];
+        } else {
+            return false;
         }
+    }
 
-        public function createOrder($orderName, $customerNumber, $dimension, $priceListName, $department, $branch, $priceIncludeVat, $staffUsername){
-            $method = "CreateOrder";
+    public function createOrder($orderName, $customerNumber, $dimension, $priceListName, $department, $branch, $priceIncludeVat, $staffUsername)
+    {
+        $method = "CreateOrder";
 
-            $data = [
+        $data = [
                 "name"=>$orderName,
                 "customer"=>$customerNumber,
                 "dimension"=>$dimension,
@@ -648,42 +704,45 @@
                 "username"=>$staffUsername
             ];
 
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        public function findProduct($productName){
-            $method = "FindProduct";
+    public function findProduct($productName)
+    {
+        $method = "FindProduct";
 
-            $data = [
+        $data = [
                 "productname"=>$productName
             ];
             
-            $product = $this->makeCall($method, $data);
+        $product = $this->makeCall($method, $data);
 
-            if($product){
-                return $product[0];
-            }else{
-                return false;
-            }
+        if ($product) {
+            return $product[0];
+        } else {
+            return false;
         }
+    }
 
-        public function getStaffAppointments($staffUsername){
-            $method = "StaffGetAppointments";
+    public function getStaffAppointments($staffUsername)
+    {
+        $method = "StaffGetAppointments";
 
-            $data = [
+        $data = [
                 "username"=>$staffUsername
             ];
             
-            return $this->makeCall($method, $data);
-        }
+        return $this->makeCall($method, $data);
+    }
 
-        //NOTE: works, both doesn't reflect in list
-        public function createAppointment($customerNumber, $subject, $dimension, $startTime, $endTime, $staffUsername){
-            $method = "CreateServiceAppointment";
+    //NOTE: works, both doesn't reflect in list
+    public function createAppointment($customerNumber, $subject, $dimension, $startTime, $endTime, $staffUsername)
+    {
+        $method = "CreateServiceAppointment";
 
-            $startTime = new \Carbon\Carbon($startTime);
-            $endTime = new \Carbon\Carbon($endTime);
-            $data = [
+        $startTime = new \Carbon\Carbon($startTime);
+        $endTime = new \Carbon\Carbon($endTime);
+        $data = [
                 "regarding" => $customerNumber,
                 "subject" => $subject,
                 "dimension" => $dimension,
@@ -692,6 +751,6 @@
                 "username" => $staffUsername,
             ];
 
-            return $this->makeCall($method, $data);
-        }
-	}
+        return $this->makeCall($method, $data);
+    }
+}

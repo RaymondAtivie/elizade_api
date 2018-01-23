@@ -2,7 +2,7 @@
 
     namespace App\Factories;
 
-    use App\Exceptions\JWT\AttemptParamException;
+use App\Exceptions\JWT\AttemptParamException;
     use App\Exceptions\JWT\InvalidUserException;
     use App\Exceptions\JWT\TokenException;
     use Illuminate\Support\Facades\Hash;
@@ -10,20 +10,21 @@
 
     use Illuminate\Http\Request;
 
-    class JWTAuth {
-
+    class JWTAuth
+    {
         protected $token;
 
         protected $user;
 
-        public function attempt($user){
+        public function attempt($user)
+        {
 
             // get user
             $this->user = $this->getUserFomObject($user);
             // create payload
             $payload = [
                 "iss"=> config('jwt.iss'),
-                "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*240)) ),
+                "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*24000))),
                 "iat"=> time(),
                 "sub"=> $this->user->id,
             ];
@@ -35,14 +36,15 @@
             return $this;
         }
 
-        public function attemptStaff($user){
+        public function attemptStaff($user)
+        {
 
             // get user
             $this->user = $this->getUserFomCRM($user);
             // create payload
             $payload = [
                 "iss"=> config('jwt.iss'),
-                "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*240)) ),
+                "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*240))),
                 "iat"=> time(),
                 "sub"=> $this->user,
             ];
@@ -54,19 +56,20 @@
             return $this;
         }
 
-        public function parseToken(){
+        public function parseToken()
+        {
             // set token default to null
             $this->token = null;
             // if token is not in get request
-            if(!isset($_GET['token'])){
-                if(isset($_SERVER['HTTP_AUTHORIZATION'])){
+            if (!isset($_GET['token'])) {
+                if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
                     $this->token = $_SERVER['HTTP_AUTHORIZATION'];
                 }
-            }else{
+            } else {
                 $this->token = $_GET['token'];
             }
             // if there was a token in the request
-            if($this->token){
+            if ($this->token) {
                 // remove bearer for header based token
                 $this->token = str_replace('Bearer ', '', $this->token);
             }
@@ -74,9 +77,10 @@
             return $this;
         }
 
-        public function authenticate(){
+        public function authenticate()
+        {
             // if no token
-            if(!$this->token){
+            if (!$this->token) {
                 // return false
                 throw new TokenException('token_absent');
             }
@@ -84,8 +88,7 @@
             // get payload from token
             $payload = $this->decode($this->token);
             
-            if($payload->exp < time())
-            {
+            if ($payload->exp < time()) {
                 throw new TokenException('token_expired');
             }
             
@@ -93,19 +96,18 @@
             $model = new \App\User;
             
             // get user from payload
-            if(!$this->user = $model->where("id", $payload->sub)->first())
-            {
+            if (!$this->user = $model->where("id", $payload->sub)->first()) {
                 throw new TokenException('invalid_user');
             }
 
             // return class object to enable method chaining
             return $this;
-            
         }
 
-        public function authenticateCRM(){
+        public function authenticateCRM()
+        {
             // if no token
-            if(!$this->token){
+            if (!$this->token) {
                 // return false
                 throw new TokenException('token_absent');
             }
@@ -113,123 +115,115 @@
             // get payload from token
             $payload = $this->decode($this->token);
             
-            if($payload->exp < time())
-            {
+            if ($payload->exp < time()) {
                 throw new TokenException('token_expired');
             }
             
             // get user from payload
-            if(!is_object($payload->sub)){
+            if (!is_object($payload->sub)) {
                 throw new TokenException('invalid_user');
-            }else{
+            } else {
                 $this->user = $payload->sub;
             }
 
             // return class object to enable method chaining
             return $this;
-            
         }
 
-        public function getUser(){
+        public function getUser()
+        {
             // return the user
             return $this->user;
         }
 
-        public function getToken(){
+        public function getToken()
+        {
             // return token
             return $this->token;
         }
 
-        private function getUserFomCRM($user){
+        private function getUserFomCRM($user)
+        {
             // instantiate model
             $model = new \App\User;
             // if user object is passed
-            if($user instanceof \App\User ){
+            if ($user instanceof \App\User) {
                 // do nothing
-            }elseif(is_array($user)){ 
+            } elseif (is_array($user)) {
                 // else if user is an array
-                if(isset($user['username']) && isset($user['password'])){ // if user email and password were supplied
+                if (isset($user['username']) && isset($user['password'])) { // if user email and password were supplied
                     $SC = new SoapConnect();
 
                     $CRMUser = $SC->getStaffDetails($user['username'], $user['password']);
                     
-                    if(!$CRMUser){
+                    if (!$CRMUser) {
                         throw new InvalidUserException('Invalid username or password.');
                     }
                     // return user
                     return $CRMUser;
-                }else{
+                } else {
                     // throw new invalid user data supplied
                     throw new InvalidUserException;
                 }
-            }else{
+            } else {
                 // throw new attempt param exception
                 throw new AttemptParamException;
             }
         }
 
-        private function getUserFomObject($user){
+        private function getUserFomObject($user)
+        {
             // instantiate model
             $model = new \App\User;
             // if user object is passed
-            if($user instanceof \App\User ){
+            if ($user instanceof \App\User) {
                 // do nothing
-            }elseif(is_array($user))
-            { // else if user is an array
-                if(isset($user['email']) && isset($user['password']))
-                { // if user email and password were supplied
+            } elseif (is_array($user)) { // else if user is an array
+                if (isset($user['email']) && isset($user['password'])) { // if user email and password were supplied
                     $uPassword = $user['password'];
                     // find user
-                    if(!$user = $model->where('email', $user['email'])
-                    ->first())
-                    {
+                    if (!$user = $model->where('email', $user['email'])
+                    ->first()) {
                         // invalid login credentials
                         throw new InvalidUserException('Invalid email or password.');
                     }
 
-                    if(!Hash::check($uPassword, $user->password)){
+                    if (!Hash::check($uPassword, $user->password)) {
                         throw new InvalidUserException('Invalid email or password.');
                     }
                     // return user
                     return $user;
-                }elseif(isset($user['surname']) && isset($user['passport_no']))
-                { // else if user surname and passport number were supplied
+                } elseif (isset($user['surname']) && isset($user['passport_no'])) { // else if user surname and passport number were supplied
                     // find user
-                    if(!$user = $model->where('surname', $user['surname'])
+                    if (!$user = $model->where('surname', $user['surname'])
                     ->where('passport_no', $user['passport_no'])
-                    ->first())
-                    {
+                    ->first()) {
                         // invalid login credentials
                         throw new InvalidUserException('Invalid surname or passport number.');
                     }
                     // return user
                     return $user;
-                }else{
+                } else {
                     // throw new invalid user data supplied
                     throw new InvalidUserException;
                 }
-            }elseif(is_int($user))
-            { // else if user is an integer (user id)
+            } elseif (is_int($user)) { // else if user is an integer (user id)
                 // find user
-                if(!$user = $model->find($user))
-                {
+                if (!$user = $model->find($user)) {
                     // invalid login credentials
                     throw new InvalidUserException('Invalid user.');
                 }
                 // return user
                 return $user;
-            }elseif(is_string($user))
-            { // else if user is an integer (user id)
+            } elseif (is_string($user)) { // else if user is an integer (user id)
                 // find user
-                if(!$user = $model->where('id', $user)->first())
-                {
+                if (!$user = $model->where('id', $user)->first()) {
                     // invalid login credentials
                     throw new InvalidUserException('Invalid user.');
                 }
                 // return user
                 return $user;
-            }else
-            {
+            } else {
                 // throw new attempt param exception
                 throw new AttemptParamException;
             }
@@ -318,16 +312,20 @@
         private function urlSafeB64Encode($data)
         {
             $b64 = base64_encode($data);
-            $b64 = str_replace(array('+', '/', '\r', '\n', '='),
+            $b64 = str_replace(
+                array('+', '/', '\r', '\n', '='),
                     array('-', '_'),
-                    $b64);
+                    $b64
+            );
             return $b64;
         }
         private function urlSafeB64Decode($b64)
         {
-            $b64 = str_replace(array('-', '_'),
+            $b64 = str_replace(
+                array('-', '_'),
                     array('+', '/'),
-                    $b64);
+                    $b64
+            );
             return base64_decode($b64);
         }
     }

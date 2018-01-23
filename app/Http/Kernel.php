@@ -18,6 +18,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \Barryvdh\Cors\HandleCors::class,
     ];
 
     /**
@@ -50,7 +51,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        // 'auth' => \Illuminate\Auth\Middleware\Authenticate::class,    
+        // 'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.staff' => \App\Http\Middleware\AuthenticateStaff::class,
 
