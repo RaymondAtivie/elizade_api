@@ -8,13 +8,15 @@ use Illuminate\Validation\Rule;
 
 class StaffController extends BaseController
 {
-    public function __construct(){
+    public function __construct()
+    {
         parent::__construct();
         // TODO: Bring all SoapConnect objects to constructor
     }
 
     //ACCOUNTS
-    public function getAccounts(Request $req){
+    public function getAccounts(Request $req)
+    {
         $staffUsername = $req->get('user')->username;
 
         $SC = new SoapConnect();
@@ -29,17 +31,18 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function findAccount($account_number){
+    public function findAccount($account_number)
+    {
         $SC = new SoapConnect();
         $account = $SC->findAccount($account_number);
 
-        if($account){
+        if ($account) {
             $data = [
                 "success"=>true,
                 "message"=>"account successfully retrieved",
                 "data"=>$account
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"could not find account",
@@ -50,15 +53,16 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function createAccount(Request $req){
-         $post = $req->only(['accountName', 'email', 'phone', 'salesPerson', 'country', 'state', 'acctType', 'customerClass', 'customerCategory', 'origin', 'department', 'branch', 'businessSector', 'genBusinessGrp', 'customerPostGrp', 'vatPostGrp']);
+    public function createAccount(Request $req)
+    {
+        $post = $req->only(['accountName', 'email', 'phone', 'salesPerson', 'country', 'state', 'acctType', 'customerClass', 'customerCategory', 'origin', 'department', 'branch', 'businessSector', 'genBusinessGrp', 'customerPostGrp', 'vatPostGrp']);
 
-         $customerClassOptions = ["High Fleet", "Medium Fleet", "Low Fleet"];
-         $acctTypeOptions = ["Potential", "Actual"];
-         $customerCategoryOptions = ["Individual", "Corporate"];
-         $originOptions = ["Elizade", "Others"];
-         $rules = [
-            'accountName' => "required", 
+        $customerClassOptions = ["High Fleet", "Medium Fleet", "Low Fleet"];
+        $acctTypeOptions = ["Potential", "Actual"];
+        $customerCategoryOptions = ["Individual", "Corporate"];
+        $originOptions = ["Elizade", "Others"];
+        $rules = [
+            'accountName' => "required",
             'email' => "required|email",
             'phone' => "required",
             'salesPerson' => "required",
@@ -83,10 +87,10 @@ class StaffController extends BaseController
         ];
         $validation = \Validator::make($post, $rules, $messages);
 
-        if($validation->fails()){
+        if ($validation->fails()) {
             $errorMessage = $validation->errors()->getMessages();
             return response()->json([
-                    "success" => false, 
+                    "success" => false,
                     "message" => $errorMessage,
                     "type" => "validation_error"
                 ], 200);
@@ -102,13 +106,13 @@ class StaffController extends BaseController
         $SC = new SoapConnect();
         $account = $SC->createAccount($accountName, $email, $phone, $staffFullname, $country, $state, $acctType, $customerClass, $customerCategory, $origin, $department, $branch, $businessSector, $genBusinessGrp, $customerPostGrp, $vatPostGrp, $staffUsername);
 
-        if($account){
+        if ($account) {
             $data = [
                 "success"=>true,
                 "message"=>"successfully created account",
                 "data"=>$account
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"account was not created",
@@ -120,7 +124,8 @@ class StaffController extends BaseController
     }
 
     //LEADS
-    public function getLeads(Request $req){
+    public function getLeads(Request $req)
+    {
         $staffUsername = $req->get('user')->username;
 
         $SC = new SoapConnect();
@@ -135,17 +140,18 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function findLead($lead_fullname){
+    public function findLead($lead_fullname)
+    {
         $SC = new SoapConnect();
         $lead = $SC->findLead($lead_fullname);
 
-        if($lead){
+        if ($lead) {
             $data = [
                 "success"=>true,
                 "message"=>"lead successfully retrieved",
                 "data"=>$lead
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"could not find lead",
@@ -156,13 +162,14 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function createLead(Request $req){
-         $post = $req->only(['companyName', 'firstname', 'lastname', 'category', 'businessSector', 'email', 'businessPhone', 'mobilePhone', 'department', 'dimension', 'branch', 'state', 'prodOrService', 'likelyPurchaseDate', 'salesPerson']);
+    public function createLead(Request $req)
+    {
+        $post = $req->only(['companyName', 'firstname', 'lastname', 'category', 'businessSector', 'email', 'businessPhone', 'mobilePhone', 'department', 'dimension', 'branch', 'state', 'prodOrService', 'likelyPurchaseDate', 'salesPerson']);
 
-         $categoryOptions = ["Individual", "Corporate"];
-         $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
-         $rules = [
-            'companyName' => "required", 
+        $categoryOptions = ["Individual", "Corporate"];
+        $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
+        $rules = [
+            'companyName' => "required",
             'firstname' => "required",
             'lastname' => "required",
             'category' => ['required', Rule::in($categoryOptions)],
@@ -171,11 +178,11 @@ class StaffController extends BaseController
             'businessPhone' => "required",
             'mobilePhone' => "required",
             'department' => "required",
-            'dimension' => ['required', Rule::in($dimensionOptions)], 
+            'dimension' => ['required', Rule::in($dimensionOptions)],
             'branch' => "required",
             'state' => "required",
-            'prodOrService' => "required", 
-            'likelyPurchaseDate' => "required|date", 
+            'prodOrService' => "required",
+            'likelyPurchaseDate' => "required|date",
             'salesPerson' => "required"
         ];
         $messages = [
@@ -184,10 +191,10 @@ class StaffController extends BaseController
         ];
         $validation = \Validator::make($post, $rules, $messages);
 
-        if($validation->fails()){
+        if ($validation->fails()) {
             $errorMessage = $validation->errors()->getMessages();
             return response()->json([
-                    "success" => false, 
+                    "success" => false,
                     "message" => $errorMessage,
                     "type" => "validation_error"
                 ], 200);
@@ -202,13 +209,13 @@ class StaffController extends BaseController
         $SC = new SoapConnect();
         $lead = $SC->createLead($companyName, $firstname, $lastname, $category, $businessSector, $email, $businessPhone, $mobilePhone, $department, $dimension, $branch, $state, $prodOrService, $likelyPurchaseDate, $salesPerson, $staffUsername);
 
-        if($lead){
+        if ($lead) {
             $data = [
                 "success"=>true,
                 "message"=>"successfully created lead",
                 "data"=>$lead
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"lead was not created",
@@ -220,7 +227,8 @@ class StaffController extends BaseController
     }
 
     //CASES
-    public function getCases(Request $req){
+    public function getCases(Request $req)
+    {
         $staffUsername = $req->get('user')->username;
 
         $SC = new SoapConnect();
@@ -235,20 +243,21 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function createCase(Request $req){
-         $post = $req->only(['customerNumber', 'description', 'title']);
+    public function createCase(Request $req)
+    {
+        $post = $req->only(['customerNumber', 'description', 'title']);
 
-         $rules = [
-            'title' => "required", 
-            'description' => "required", 
-            'customerNumber' => "required", 
+        $rules = [
+            'title' => "required",
+            'description' => "required",
+            'customerNumber' => "required",
         ];
         $validation = \Validator::make($post, $rules);
 
-        if($validation->fails()){
+        if ($validation->fails()) {
             $errorMessage = $validation->errors()->getMessages();
             return response()->json([
-                    "success" => false, 
+                    "success" => false,
                     "message" => $errorMessage,
                     "type" => "validation_error"
                 ], 200);
@@ -263,13 +272,13 @@ class StaffController extends BaseController
         $SC = new SoapConnect();
         $case = $SC->staffCreateCase($customerNumber, $description, $title, $staffUsername);
 
-        if($case){
+        if ($case) {
             $data = [
                 "success"=>true,
                 "message"=>"successfully created case",
                 "data"=>$case
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"case was not created",
@@ -281,7 +290,8 @@ class StaffController extends BaseController
     }
 
     //APPOINTMENTS
-    public function getAppointments(Request $req){
+    public function getAppointments(Request $req)
+    {
         $staffUsername = $req->get('user')->username;
 
         $SC = new SoapConnect();
@@ -296,18 +306,19 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function createAppointment(Request $req){
-         $post = $req->only(['customerNumber', 'subject', 'dimension', 'startTime', 'endTime', 'rating', 'salesPerson']);
+    public function createAppointment(Request $req)
+    {
+        $post = $req->only(['customerNumber', 'subject', 'dimension', 'startTime', 'endTime', 'rating', 'salesPerson']);
 
-         $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
-         $ratingOptions = ['Hot', 'Warm', 'Cold'];
-         $rules = [
-            'subject' => "required", 
-            'customerNumber' => "required", 
-            'dimension' =>  ['required', Rule::in($dimensionOptions)], 
+        $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
+        $ratingOptions = ['Hot', 'Warm', 'Cold'];
+        $rules = [
+            'subject' => "required",
+            'customerNumber' => "required",
+            'dimension' =>  ['required', Rule::in($dimensionOptions)],
             'startTime' => "required|date",
             'endTime' => "required|date",
-            'rating' => ['required', Rule::in($ratingOptions)], 
+            'rating' => ['required', Rule::in($ratingOptions)],
             'salesPerson' => "required"
         ];
         $messages = [
@@ -316,10 +327,10 @@ class StaffController extends BaseController
         ];
         $validation = \Validator::make($post, $rules, $messages);
 
-        if($validation->fails()){
+        if ($validation->fails()) {
             $errorMessage = $validation->errors()->getMessages();
             return response()->json([
-                    "success" => false, 
+                    "success" => false,
                     "message" => $errorMessage,
                     "type" => "validation_error"
                 ], 200);
@@ -334,13 +345,13 @@ class StaffController extends BaseController
         $SC = new SoapConnect();
         $appointment = $SC->createAppointment($customerNumber, $subject, $dimension, $startTime, $endTime, $staffUsername);
 
-        if($appointment){
+        if ($appointment) {
             $data = [
                 "success"=>true,
                 "message"=>"successfully created appointment",
                 "data"=>$appointment
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"appointment was not created",
@@ -352,7 +363,8 @@ class StaffController extends BaseController
     }
 
     //OPPORTUNITY
-    public function getOpportunities(Request $req){
+    public function getOpportunities(Request $req)
+    {
         $staffUsername = $req->get('user')->username;
 
         $SC = new SoapConnect();
@@ -367,17 +379,18 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function findOpportunity($topic){
+    public function findOpportunity($topic)
+    {
         $SC = new SoapConnect();
         $opportunity = $SC->findOpportunity($topic);
 
-        if($opportunity){
+        if ($opportunity) {
             $data = [
                 "success"=>true,
                 "message"=>"opportunity successfully retrieved",
                 "data"=>$opportunity
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"could not find opportunity",
@@ -388,19 +401,20 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function createOpportunity(Request $req){
-         $post = $req->only(['topic', 'customerNumber', 'dimension', 'estCloseDate', 'probability', 'rating', 'salesPerson', 'description', 'staffUsername']);
+    public function createOpportunity(Request $req)
+    {
+        $post = $req->only(['topic', 'customerNumber', 'dimension', 'estCloseDate', 'probability', 'rating', 'salesPerson', 'description', 'staffUsername']);
 
-         $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
-         $ratingOptions = ['Hot', 'Warm', 'Cold'];
-         $rules = [
-            'topic' => "required", 
-            'customerNumber' => "required", 
-            'description' => "required", 
-            'dimension' =>  ['required', Rule::in($dimensionOptions)], 
+        $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
+        $ratingOptions = ['Hot', 'Warm', 'Cold'];
+        $rules = [
+            'topic' => "required",
+            'customerNumber' => "required",
+            'description' => "required",
+            'dimension' =>  ['required', Rule::in($dimensionOptions)],
             'estCloseDate' => "required|date",
             'probability' => "required|numeric|between:1,100",
-            'rating' => ['required', Rule::in($ratingOptions)], 
+            'rating' => ['required', Rule::in($ratingOptions)],
             'salesPerson' => "required"
         ];
         $messages = [
@@ -409,10 +423,10 @@ class StaffController extends BaseController
         ];
         $validation = \Validator::make($post, $rules, $messages);
 
-        if($validation->fails()){
+        if ($validation->fails()) {
             $errorMessage = $validation->errors()->getMessages();
             return response()->json([
-                    "success" => false, 
+                    "success" => false,
                     "message" => $errorMessage,
                     "type" => "validation_error"
                 ], 200);
@@ -427,13 +441,13 @@ class StaffController extends BaseController
         $SC = new SoapConnect();
         $opportunity = $SC->createOpportunity($topic, $customerNumber, $dimension, $estCloseDate, $probability, $rating, $salesPerson, $description, $staffUsername);
 
-        if($opportunity){
+        if ($opportunity) {
             $data = [
                 "success"=>true,
                 "message"=>"successfully created opportunity",
                 "data"=>$opportunity
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"opportunity was not created",
@@ -445,7 +459,8 @@ class StaffController extends BaseController
     }
 
     //CONTACTS
-    public function getContacts(Request $req){
+    public function getContacts(Request $req)
+    {
         $staffUsername = $req->get('user')->username;
 
         $SC = new SoapConnect();
@@ -460,17 +475,18 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function findContact($contact_name){
+    public function findContact($contact_name)
+    {
         $SC = new SoapConnect();
         $contact = $SC->findContact($contact_name);
 
-        if($contact){
+        if ($contact) {
             $data = [
                 "success"=>true,
                 "message"=>"contact successfully retrieved",
                 "data"=>$contact
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"could not find contact",
@@ -481,21 +497,22 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function createContact(Request $req){
-         $post = $req->only(['firstname', 'lastname', 'email', 'phone']);
+    public function createContact(Request $req)
+    {
+        $post = $req->only(['firstname', 'lastname', 'email', 'phone']);
 
-         $rules = [
-            'firstname' => "required", 
-            'lastname' => "required", 
-            'email' => "required|email", 
+        $rules = [
+            'firstname' => "required",
+            'lastname' => "required",
+            'email' => "required|email",
             'phone' => "required"
         ];
         $validation = \Validator::make($post, $rules);
 
-        if($validation->fails()){
+        if ($validation->fails()) {
             $errorMessage = $validation->errors()->getMessages();
             return response()->json([
-                    "success" => false, 
+                    "success" => false,
                     "message" => $errorMessage,
                     "type" => "validation_error"
                 ], 200);
@@ -510,13 +527,13 @@ class StaffController extends BaseController
         $SC = new SoapConnect();
         $contact = $SC->createContact($firstname, $lastname, $email, $phone, $staffUsername);
 
-        if($contact){
+        if ($contact) {
             $data = [
                 "success"=>true,
                 "message"=>"successfully created contact",
                 "data"=>$contact
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"contact was not created",
@@ -528,7 +545,8 @@ class StaffController extends BaseController
     }
 
     //QUOTES
-    public function getQuotes(Request $req){
+    public function getQuotes(Request $req)
+    {
         $staffUsername = $req->get('user')->username;
 
         $SC = new SoapConnect();
@@ -543,17 +561,18 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function findQuote($quote_number){
+    public function findQuote($quote_number)
+    {
         $SC = new SoapConnect();
         $quote = $SC->findQuote($quote_number);
 
-        if($quote){
+        if ($quote) {
             $data = [
                 "success"=>true,
                 "message"=>"quote successfully retrieved",
                 "data"=>$quote
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"could not find quote",
@@ -564,16 +583,17 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function createQuote(Request $req){
-         $post = $req->only(['quoteName', 'customerNumber', 'dimension', 'priceListName', 'department', 'branch', 'salesPerson']);
+    public function createQuote(Request $req)
+    {
+        $post = $req->only(['quoteName', 'customerNumber', 'dimension', 'priceListName', 'department', 'branch', 'salesPerson']);
 
-         $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
-         $rules = [
-            'quoteName' => "required", 
-            'customerNumber' => "required", 
-            'dimension' =>  ['required', Rule::in($dimensionOptions)], 
-            'priceListName' => "required", 
-            'department' => "required", 
+        $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
+        $rules = [
+            'quoteName' => "required",
+            'customerNumber' => "required",
+            'dimension' =>  ['required', Rule::in($dimensionOptions)],
+            'priceListName' => "required",
+            'department' => "required",
             'branch' => "required",
             'salesPerson' => "required",
         ];
@@ -582,10 +602,10 @@ class StaffController extends BaseController
         ];
         $validation = \Validator::make($post, $rules, $messages);
 
-        if($validation->fails()){
+        if ($validation->fails()) {
             $errorMessage = $validation->errors()->getMessages();
             return response()->json([
-                    "success" => false, 
+                    "success" => false,
                     "message" => $errorMessage,
                     "type" => "validation_error"
                 ], 200);
@@ -600,13 +620,13 @@ class StaffController extends BaseController
         $SC = new SoapConnect();
         $quote = $SC->createQuote($quoteName, $priceListName, $dimension, $department, $salesPerson, $branch, $customerNumber, $staffUsername);
 
-        if($quote){
+        if ($quote) {
             $data = [
                 "success"=>true,
                 "message"=>"successfully created quote",
                 "data"=>$quote
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"quote was not created",
@@ -618,7 +638,8 @@ class StaffController extends BaseController
     }
 
     //ORDERS
-    public function getOrders(Request $req){
+    public function getOrders(Request $req)
+    {
         $staffUsername = $req->get('user')->username;
 
         $SC = new SoapConnect();
@@ -633,17 +654,18 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function findOrder($order_number){
+    public function findOrder($order_number)
+    {
         $SC = new SoapConnect();
         $order = $SC->findOrder($order_number);
 
-        if($order){
+        if ($order) {
             $data = [
                 "success"=>true,
                 "message"=>"order successfully retrieved",
                 "data"=>$order
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"could not find order",
@@ -654,18 +676,19 @@ class StaffController extends BaseController
         return response()->json($data, 200);
     }
 
-    public function createOrder(Request $req){
-         $post = $req->only(['orderName', 'customerNumber', 'dimension', 'priceListName', 'department', 'branch', 'priceIncludeVat']);
+    public function createOrder(Request $req)
+    {
+        $post = $req->only(['orderName', 'customerNumber', 'dimension', 'priceListName', 'department', 'branch', 'priceIncludeVat']);
 
-         $priceIncludeVatOptions = ["Yes", "No"];
-         $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
-         $rules = [
-            'orderName' => "required", 
-            'customerNumber' => "required", 
-            'dimension' =>  ['required', Rule::in($dimensionOptions)], 
-            'priceListName' => "required", 
-            'department' => "required", 
-            'branch' => "required", 
+        $priceIncludeVatOptions = ["Yes", "No"];
+        $dimensionOptions = ['Sales & Marketing', 'Aftersales'];
+        $rules = [
+            'orderName' => "required",
+            'customerNumber' => "required",
+            'dimension' =>  ['required', Rule::in($dimensionOptions)],
+            'priceListName' => "required",
+            'department' => "required",
+            'branch' => "required",
             'priceIncludeVat' => ['required', Rule::in($priceIncludeVatOptions)]
         ];
         $messages = [
@@ -674,10 +697,10 @@ class StaffController extends BaseController
         ];
         $validation = \Validator::make($post, $rules, $messages);
 
-        if($validation->fails()){
+        if ($validation->fails()) {
             $errorMessage = $validation->errors()->getMessages();
             return response()->json([
-                    "success" => false, 
+                    "success" => false,
                     "message" => $errorMessage,
                     "type" => "validation_error"
                 ], 200);
@@ -692,13 +715,13 @@ class StaffController extends BaseController
         $SC = new SoapConnect();
         $order = $SC->createOrder($orderName, $customerNumber, $dimension, $priceListName, $department, $branch, $priceIncludeVat, $staffUsername);
 
-        if($order){
+        if ($order) {
             $data = [
                 "success"=>true,
                 "message"=>"successfully created order",
                 "data"=>$order
             ];
-        }else{
+        } else {
             $data = [
                 "success"=>false,
                 "message"=>"order was not created",

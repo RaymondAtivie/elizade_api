@@ -42,6 +42,7 @@ class SoapConnect
     {
         try {
             $response = $this->soapClient->$method($data);
+            // dd($data, $method, $response);
             return json_decode($response->{$method."Result"});
         } catch (Exception $e) {
             echo "<h1>Cannot connnect to Loan Application Server Right now. Please try again Later<h1>";
@@ -749,6 +750,31 @@ class SoapConnect
                 "StartTime" => $startTime->toW3cString(),
                 "EndTime" => $endTime->toW3cString(),
                 "username" => $staffUsername,
+            ];
+
+        return $this->makeCall($method, $data);
+    }
+
+    public function createCustomerAppointment($customerNumber, $subject, $dimension, $startTime, $endTime, $apptype, $vehicleregno, $servicetype, $mileage, $lastservicedate, $callpreference)
+    {
+        $method = "CustomerCreateApp";
+
+        $startTime = new \Carbon\Carbon($startTime);
+        $endTime = new \Carbon\Carbon($endTime);
+
+        $lastservicedate = new \Carbon\Carbon($lastservicedate);
+        $data = [
+                "regarding" => $customerNumber,
+                "subject" => $subject,
+                "dimension" => $dimension,
+                "StartTime" => $startTime->toW3cString(),
+                "EndTime" => $endTime->toW3cString(),
+                "apptype" => $apptype,
+                "vehicleregno" => $vehicleregno,
+                "servicetype" => $servicetype,
+                "mileage" => $mileage,
+                "lastservicedate" => $lastservicedate->toW3cString(),
+                "callpreference" => $callpreference,
             ];
 
         return $this->makeCall($method, $data);

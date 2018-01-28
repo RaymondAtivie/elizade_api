@@ -57,6 +57,10 @@ Route::group([
         Route::get("/cases", "CaseController@getCases");
         Route::get("/cases/{ticket_id}", "CaseController@getCase");
         Route::post("/cases", "CaseController@createCase");
+
+        Route::post('/appointment/showroom', "CustomerController@createShowRoomAppointment");
+        Route::post('/appointment/demo', "CustomerController@demonstrationAppointment");
+        Route::post('/appointment/call', "CustomerController@callAppointment");
     });
     
     Route::group(['middleware' => 'auth.staff', "prefix"=>"staff"], function () {

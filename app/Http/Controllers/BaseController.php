@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Factories\JWTAuth;
 
-
 class BaseController extends Controller
 {
     // logged in user
@@ -17,7 +16,8 @@ class BaseController extends Controller
     /*
     * Controller construct method
     */
-    public function __construct(){
+    public function __construct()
+    {
         $this->auth = new JWTAuth;
     }
 

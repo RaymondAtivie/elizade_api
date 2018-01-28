@@ -3,10 +3,10 @@
     namespace App\Factories;
 
 use App\Exceptions\JWT\AttemptParamException;
-    use App\Exceptions\JWT\InvalidUserException;
-    use App\Exceptions\JWT\TokenException;
-    use Illuminate\Support\Facades\Hash;
-    use App\Factories\SoapConnect;
+use App\Exceptions\JWT\InvalidUserException;
+use App\Exceptions\JWT\TokenException;
+use Illuminate\Support\Facades\Hash;
+use App\Factories\SoapConnect;
 
     use Illuminate\Http\Request;
 
@@ -24,7 +24,7 @@ use App\Exceptions\JWT\AttemptParamException;
             // create payload
             $payload = [
                 "iss"=> config('jwt.iss'),
-                "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*24000))),
+                "exp"=> (time() + env("TOKEN_EXPIRE", (60*60*24000000))),
                 "iat"=> time(),
                 "sub"=> $this->user->id,
             ];
