@@ -265,4 +265,56 @@ class CustomerController extends BaseController
 
         return response()->json($data, 200);
     }
+
+    public function serviceRepair(Request $req)
+    {
+        $post = $req->only(['vehicle_reg_no', 'vehicle_type', 'vehicle_model', 'vehicle_year', "last_service_date", "datetime", "repair_type", "repair_description"]);
+
+        $rules = [
+            "vehicle_reg_no" => "required",
+            "vehicle_type" => "required",
+            "vehicle_model" => "required",
+            "vehicle_year" => "required",
+            "last_service_date" => "required",
+            "datetime" => "required",
+            "repair_type" => "required",
+            "repair_description" => "required",
+        ];
+        $validation = \Validator::make($post, $rules);
+
+        if ($validation->fails()) {
+            $errorMessage = $validation->errors()->getMessages();
+            return response()->json([
+                    "success" => false,
+                    "message" => $errorMessage,
+                    "type" => "validation_error"
+                ], 200);
+        }
+
+        $user = $this->auth->parseToken()->authenticate()->getUser();
+        
+        $SC = new SoapConnect();
+
+        $response = $SC->createCustomerAppointment(
+            $user->customer_number,
+            "Vehicle RegNo: {$post['vehicle_reg_no']}, \n Vehicle Type: {$post['vehicle_type']}, \n Vehicle Model: {$post['vehicle_model']}, \n Vehicle Year: {$post['vehicle_year']}, \n Repair Type: {$post['repair_type']}, \n Issue Description: {$post['repair_description']}",
+            "Aftersales",
+            $post['datetime'],
+            $post['datetime'],
+            "Service/Repairs",
+            "dj6556",
+            "Mechanical Repair",
+            intval(0),
+            $post['last_service_date'],
+            null
+        );
+
+        $data = [
+            "success"=>true,
+            "message"=>"Successfully reported for repair",
+            "data"=>$response
+        ];
+
+        return response()->json($data, 200);
+    }
 }
