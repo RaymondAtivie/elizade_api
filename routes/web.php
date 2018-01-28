@@ -63,6 +63,7 @@ Route::group([
         Route::post('/appointment/call', "CustomerController@callAppointment");
 
         Route::post('/service/diagnosis', "CustomerController@serviceDiagnisis");
+        Route::post('/service/bodywork', "CustomerController@serviceBodywork");
     });
     
     Route::group(['middleware' => 'auth.staff', "prefix"=>"staff"], function () {
