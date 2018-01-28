@@ -48,6 +48,8 @@ Route::group([
     Route::get("/cars", "GeneralController@getCars");
     
     Route::group(['middleware' => 'auth'], function () {
+        Route::post("/createcars", "CustomerController@createCars");
+        
         Route::get("/products", "ProductController@getProducts");
     
         Route::post("/quotes", "OrderController@makeQuoteRequest");
@@ -61,6 +63,8 @@ Route::group([
         Route::post('/appointment/showroom', "CustomerController@createShowRoomAppointment");
         Route::post('/appointment/demo', "CustomerController@demonstrationAppointment");
         Route::post('/appointment/call', "CustomerController@callAppointment");
+
+        Route::get('/appointment/feedback/{appoint_id}', "CustomerController@appointmentFeedback");
 
         Route::post('/service/diagnosis', "CustomerController@serviceDiagnisis");
         Route::post('/service/bodywork', "CustomerController@serviceBodywork");

@@ -371,4 +371,39 @@ class CustomerController extends BaseController
 
         return response()->json($data, 200);
     }
+
+    public function createCars(Request $req)
+    {
+        $post = $req->only(['vehicle_reg_no', 'vehicle_model', "vehicle_year"]);
+
+        $rules = [
+            "vehicle_reg_no" => "required",
+            "vehicle_model" => "required",
+            "vehicle_year" => "required",
+        ];
+        $validation = \Validator::make($post, $rules);
+
+        if ($validation->fails()) {
+            $errorMessage = $validation->errors()->getMessages();
+            return response()->json([
+                    "success" => false,
+                    "message" => $errorMessage,
+                    "type" => "validation_error"
+                ], 200);
+        }
+
+        $user = $this->auth->parseToken()->authenticate()->getUser();
+        
+        $SC = new SoapConnect();
+
+        $response = $SC->createCars($user->customer_number, $post['vehicle_reg_no'], $post['vehicle_model'], $post['vehicle_year']);
+
+        $data = [
+            "success"=>true,
+            "message"=>"Successfully registered car",
+            "data"=>$response
+        ];
+
+        return response()->json($data, 200);
+    }
 }

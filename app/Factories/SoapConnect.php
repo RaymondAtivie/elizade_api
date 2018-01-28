@@ -779,4 +779,17 @@ class SoapConnect
 
         return $this->makeCall($method, $data);
     }
+
+    public function createCars($customerNumber, $regNo, $model, $year)
+    {
+        $method = "CreateCars";
+        $data = [
+            "custno" => $customerNumber,
+            "regNo" => $regNo,
+            "model" => $model,
+            "year" => $year,
+        ];
+
+        return $this->makeCall($method, $data);
+    }
 }

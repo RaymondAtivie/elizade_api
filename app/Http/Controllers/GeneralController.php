@@ -155,14 +155,36 @@ class GeneralController extends BaseController
     public function getCars()
     {
         $SC = new SoapConnect();
-        $result = $SC->getCars();
+        $cars = $SC->getCars();
+
+        $user = $this->auth->parseToken()->authenticate()->getUser();
+
+        $myCars = [];
+        foreach ($cars as $car) {
+            if ($car->Customer == $user->customer_number) {
+                if (!$this->isCarExist($myCars, $car->RegistrationNo)) {
+                    $myCars[] = $car;
+                }
+            }
+        }
 
         $data = [
             "success"=>true,
-            "message"=>"successfully retrieved",
-            "data"=>$result
+            "message"=>"successfully retrieved cars",
+            "data"=>$myCars
         ];
 
         return response()->json($data, 200);
+    }
+
+    public function isCarExist($allCars, $regNo)
+    {
+        foreach ($allCars as $car) {
+            if ($car->RegistrationNo == $regNo) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
