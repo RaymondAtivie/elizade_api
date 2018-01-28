@@ -317,4 +317,58 @@ class CustomerController extends BaseController
 
         return response()->json($data, 200);
     }
+
+    public function serviceService(Request $req)
+    {
+        $post = $req->only(['vehicle_reg_no', 'vehicle_type', 'vehicle_model', 'vehicle_year', "last_service_date", "datetime", "mileage", "service_type", "service_series", "issue"]);
+
+        $rules = [
+            "vehicle_reg_no" => "required",
+            "vehicle_type" => "required",
+            "vehicle_model" => "required",
+            "vehicle_year" => "required",
+            "last_service_date" => "required",
+            "datetime" => "required",
+            "mileage" => "required",
+            "service_type" => "required",
+            "service_series" => "required",
+            "issue" => "required",
+        ];
+        $validation = \Validator::make($post, $rules);
+
+        if ($validation->fails()) {
+            $errorMessage = $validation->errors()->getMessages();
+            return response()->json([
+                    "success" => false,
+                    "message" => $errorMessage,
+                    "type" => "validation_error"
+                ], 200);
+        }
+
+        $user = $this->auth->parseToken()->authenticate()->getUser();
+        
+        $SC = new SoapConnect();
+
+        $response = $SC->createCustomerAppointment(
+            $user->customer_number,
+            "Vehicle RegNo: {$post['vehicle_reg_no']}, \n Vehicle Type: {$post['vehicle_type']}, \n Vehicle Model: {$post['vehicle_model']}, \n Vehicle Year: {$post['vehicle_year']}, \n Service Type: {$post['service_type']}, \n Service Series: {$post['service_series']}, \n Issue Description: {$post['issue']}",
+            "Aftersales",
+            $post['datetime'],
+            $post['datetime'],
+            "Service/Repairs",
+            "dj6556",
+            "Service",
+            intval($post['mileage']),
+            $post['last_service_date'],
+            null
+        );
+
+        $data = [
+            "success"=>true,
+            "message"=>"Successfully reported for repair",
+            "data"=>$response
+        ];
+
+        return response()->json($data, 200);
+    }
 }
