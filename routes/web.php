@@ -55,6 +55,7 @@ Route::group([
         Route::post("/quotes", "OrderController@makeQuoteRequest");
     
         Route::get("/appointments", "CaseController@getAppointments");
+        Route::get("/services", "CaseController@getServices");
     
         Route::get("/cases", "CaseController@getCases");
         Route::get("/cases/{ticket_id}", "CaseController@getCase");

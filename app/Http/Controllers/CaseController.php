@@ -7,25 +7,27 @@ use App\Factories\SoapConnect;
 
 class CaseController extends BaseController
 {
-    function __construct(){
+    public function __construct()
+    {
         parent::__construct();
     }
 
-    function createCase(Request $req){
+    public function createCase(Request $req)
+    {
         $post = $req->only(['title', 'description']);
 
-         $rules = [
+        $rules = [
             "title" => "required",
             "description" => "required"
         ];
         $validation = \Validator::make($post, $rules);
 
-        if($validation->fails()){
+        if ($validation->fails()) {
             // validation failed
             $errorMessage = $validation->errors()->getMessages();
             // return a response
             return response()->json([
-                    "success" => false, 
+                    "success" => false,
                     "message" => $errorMessage,
                     "type" => "validation_error"
                 ], 200);
@@ -47,7 +49,8 @@ class CaseController extends BaseController
         return response()->json($data, 200);
     }
 
-    function getCases(Request $req){
+    public function getCases(Request $req)
+    {
         $user = $req->get("user");
         
         $SC = new SoapConnect();
@@ -55,7 +58,7 @@ class CaseController extends BaseController
 
         $myCases = [];
         foreach ($cases as $case) {
-            if($case->CustomerId == $user->customer_number){
+            if ($case->CustomerId == $user->customer_number) {
                 $myCases[] = $case;
             }
         }
@@ -69,13 +72,14 @@ class CaseController extends BaseController
         return response()->json($data, 200);
     }
 
-    function getCase(Request $req, $ticket_id){
+    public function getCase(Request $req, $ticket_id)
+    {
         $SC = new SoapConnect();
         $case = $SC->findCase($ticket_id);
 
-        if(!$case){
+        if (!$case) {
             return response()->json([
-                    "success" => false, 
+                    "success" => false,
                     "message" => "this case does not exist",
                     "type" => "validation_error"
                 ], 200);
@@ -90,16 +94,20 @@ class CaseController extends BaseController
         return response()->json($data, 200);
     }
 
-    function getAppointments(Request $req){
+    public function getAppointments(Request $req)
+    {
         $user = $req->get("user");
         
         $SC = new SoapConnect();
         $appointments = collect($SC->getAppointments());
 
         $myAppointments = [];
+        $appointmentNames = ['Visit Showroom', 'Schedule a demonstration', 'Speak to a sales executive'];
         foreach ($appointments as $a) {
-            if($a->CustomerID == $user->customer_number){
-                $myAppointments[] = $a;
+            if ($a->CustomerID == $user->customer_number) {
+                if (in_array($a->AppointmentType, $appointmentNames)) {
+                    $myAppointments[] = $a;
+                }
             }
         }
 
@@ -112,5 +120,29 @@ class CaseController extends BaseController
         return response()->json($data, 200);
     }
 
+    public function getServices(Request $req)
+    {
+        $user = $req->get("user");
+        
+        $SC = new SoapConnect();
+        $appointments = collect($SC->getAppointments());
 
+        $myAppointments = [];
+        $appointmentNames = ['Service/Repairs'];
+        foreach ($appointments as $a) {
+            if ($a->CustomerID == $user->customer_number) {
+                if (in_array($a->AppointmentType, $appointmentNames)) {
+                    $myAppointments[] = $a;
+                }
+            }
+        }
+
+        $data = [
+            "success"=>true,
+            "message"=>"users service/repairs successfully retrieved",
+            "data"=>$myAppointments
+        ];
+
+        return response()->json($data, 200);
+    }
 }
