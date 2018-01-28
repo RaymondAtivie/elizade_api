@@ -61,6 +61,8 @@ Route::group([
         Route::post('/appointment/showroom', "CustomerController@createShowRoomAppointment");
         Route::post('/appointment/demo', "CustomerController@demonstrationAppointment");
         Route::post('/appointment/call', "CustomerController@callAppointment");
+
+        Route::post('/service/diagnosis', "CustomerController@serviceDiagnisis");
     });
     
     Route::group(['middleware' => 'auth.staff', "prefix"=>"staff"], function () {
