@@ -330,13 +330,26 @@ class SoapConnect
             'year'   => $vehicle_year,
         ];
 
-        $r = $this->makeCall($method, $data);
+        return $this->makeCall($method, $data)[0];
+    }
 
-        if ($r) {
-            return true;
-        } else {
-            return false;
-        }
+    public function addToQuoteRequest($quote_id, $productName, $quantity, $vehicle_model, $vehicle_year, $vehicle_reg_no, $chasis_no, $part_desc, $part_no)
+    {
+        $method = "AdditionalQuouteItems";
+
+        $data = [
+            'quoteid' => $quote_id,
+            'product'   => $productName,
+            'quantity'   => intval($quantity),
+            'chasisno'   => $chasis_no,
+            'vehicleno'   => $vehicle_reg_no,
+            'partdesc'   => $part_desc,
+            'partno'   => $part_no,
+            'model'   => $vehicle_model,
+            'year'   => $vehicle_year,
+        ];
+
+        return $this->makeCall($method, $data)[0];
     }
 
 
