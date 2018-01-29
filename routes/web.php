@@ -52,7 +52,8 @@ Route::group([
         
         Route::get("/products", "ProductController@getProducts");
     
-        Route::post("/quotes", "OrderController@makeQuoteRequest");
+        Route::post("/quotes/vehicle", "OrderController@makeQuoteRequestVehicle");
+        Route::post("/quotes/parts", "OrderController@makeQuoteRequestParts");
     
         Route::get("/appointments", "CaseController@getAppointments");
         Route::get("/services", "CaseController@getServices");
@@ -113,6 +114,7 @@ Route::group([
 
 Route::get('/try', function () {
     $sp = new SoapConnect();
+    // $p = $sp->customerExist("CUST014612");
     // $p = $sp->customerExist("CUST013643");
     $p = $sp->getStaffAppointments("Nav");
     // $p = $sp->createAppointment("CUST013643", "TEST ARES", "Aftersales", "4/4/2019 10:11:11", "4/4/2019 11:11:11", "Nav");

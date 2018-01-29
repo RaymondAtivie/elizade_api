@@ -313,15 +313,22 @@ class SoapConnect
         return $this->makeCall($method, []);
     }
 
-    public function makeQuoteRequest($customerNumber, $productName, $quantity)
+    public function makeQuoteRequest($customerNumber, $productName, $quantity, $billToName, $vehicle_model, $vehicle_year, $vehicle_reg_no, $chasis_no, $part_desc, $part_no)
     {
         $method = "QuoteRequest";
 
         $data = [
-                'custno' => $customerNumber,
-                'product'   => $productName,
-                'quantity'   => intval($quantity)
-            ];
+            'custno' => $customerNumber,
+            'product'   => $productName,
+            'quantity'   => intval($quantity),
+            'billtoname'   => $billToName,
+            'chasisno'   => $chasis_no,
+            'vehicleno'   => $vehicle_reg_no,
+            'partdesc'   => $part_desc,
+            'partno'   => $part_no,
+            'model'   => $vehicle_model,
+            'year'   => $vehicle_year,
+        ];
 
         $r = $this->makeCall($method, $data);
 
